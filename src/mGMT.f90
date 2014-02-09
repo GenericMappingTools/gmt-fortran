@@ -210,17 +210,17 @@ END ENUM
 ! };
 ! -------------------------
 TYPE,BIND(C) :: GMT_VECTOR
-	INTEGER(c_int64_t) :: n_columns,n_rows
-	INTEGER(c_int) :: registration
+	INTEGER(kind=c_int64_t) :: n_columns,n_rows
+	INTEGER(kind=c_int) :: registration
 	TYPE(c_ptr) :: type,data
-	REAL(c_double) :: range(0:1)
-	CHARACTER(GMT_GRID_COMMAND_LEN320,c_char) :: command
-	CHARACTER(GMT_GRID_REMARK_LEN160,c_char) :: remark
-	INTEGER(c_int64_t) :: id
-	INTEGER(c_int) :: alloc_level,alloc_mode
+	REAL(kind=c_double) :: range(0:1)
+	CHARACTER(len=GMT_GRID_COMMAND_LEN320,kind=c_char) :: command
+	CHARACTER(len=GMT_GRID_REMARK_LEN160,kind=c_char) :: remark
+	INTEGER(kind=c_int64_t) :: id
+	INTEGER(kind=c_int) :: alloc_level,alloc_mode
 ! g95: PRIVATE attribute not implemented
-! INTEGER(c_int64_t),PRIVATE :: id
-! INTEGER(c_int),PRIVATE :: alloc_level,alloc_mode
+! INTEGER(kind=c_int64_t),PRIVATE :: id
+! INTEGER(kind=c_int),PRIVATE :: alloc_level,alloc_mode
 END TYPE
 ! -------------------------
 ! struct GMT_MATRIX {	/* Single container for a user matrix of data */
@@ -244,19 +244,19 @@ END TYPE
 ! };
 ! -------------------------
 TYPE,BIND(C) :: GMT_MATRIX
-	INTEGER(c_int64_t) :: n_rows,n_columns,n_layers
-	INTEGER(c_int) :: shape,registration
-	INTEGER(c_size_t) :: dim,size
-	INTEGER(c_int) :: type
-	REAL(c_double) :: range(0:5)
+	INTEGER(kind=c_int64_t) :: n_rows,n_columns,n_layers
+	INTEGER(kind=c_int) :: shape,registration
+	INTEGER(kind=c_size_t) :: dim,size
+	INTEGER(kind=c_int) :: type
+	REAL(kind=c_double) :: range(0:5)
 	TYPE(c_ptr) :: data
-	CHARACTER(GMT_GRID_COMMAND_LEN320,c_char) :: command
-	CHARACTER(GMT_GRID_REMARK_LEN160,c_char) :: remark
-	INTEGER(c_int64_t) :: id
-	INTEGER(c_int) :: alloc_level,alloc_mode
+	CHARACTER(len=GMT_GRID_COMMAND_LEN320,kind=c_char) :: command
+	CHARACTER(len=GMT_GRID_REMARK_LEN160,kind=c_char) :: remark
+	INTEGER(kind=c_int64_t) :: id
+	INTEGER(kind=c_int) :: alloc_level,alloc_mode
 ! g95: PRIVATE attribute not implemented
-! INTEGER(c_int64_t),PRIVATE :: id
-! INTEGER(c_int),PRIVATE :: alloc_level,alloc_mode
+! INTEGER(kind=c_int64_t),PRIVATE :: id
+! INTEGER(kind=c_int),PRIVATE :: alloc_level,alloc_mode
 END TYPE
 
 ! ----------------------------------------------------------------------
@@ -270,278 +270,278 @@ INTERFACE
 ! -------------------------
 TYPE(c_ptr) FUNCTION GMT_Create_Session(tag,pad,mode,print_func) BIND(C,NAME='GMT_Create_Session')
 IMPORT c_ptr,c_char,c_int,c_funptr
-CHARACTER(1,c_char) :: tag(*)
-INTEGER(c_int),VALUE :: pad,mode
-INTEGER(c_int),VALUE :: print_func   ! if actual argument is integer
+CHARACTER(len=1, kind=c_char) :: tag(*)
+INTEGER(kind=c_int),VALUE :: pad,mode
+INTEGER(kind=c_int),VALUE :: print_func   ! if actual argument is integer
 ! TYPE(c_funptr),VALUE :: print_func ! if actual argument is C function pointer 
 END FUNCTION
 ! -------------------------
 ! void * GMT_Create_Data(void *API, unsigned int family, unsigned int geometry, unsigned int mode, uint64_t dim[], double *wesn, double *inc, unsigned int registration, int pad, void *data);
 ! -------------------------
 TYPE(c_ptr) FUNCTION GMT_Create_Data(API,family,geometry,mode,dim,wesn,inc,registration,pad,data) BIND(C,NAME='GMT_Create_Data')
-IMPORT c_ptr,c_int,c_int64_t,c_double
+IMPORT c_ptr, c_int, c_int64_t, c_double
 TYPE(c_ptr),VALUE :: API,data
-INTEGER(c_int),VALUE :: family,geometry,mode,registration,pad
-INTEGER(c_int64_t) :: dim(*)
+INTEGER(kind=c_int),VALUE :: family,geometry,mode,registration,pad
+INTEGER(kind=c_int64_t) :: dim(*)
 TYPE(c_ptr),VALUE :: wesn,inc        ! if actual argument is C pointer
-! REAL(c_double) :: wesn(*),inc(*)   ! if actual argument is real(8) array
+! REAL(kind=c_double) :: wesn(*),inc(*)   ! if actual argument is real(8) array
 END FUNCTION
 ! -------------------------
 ! void * GMT_Get_Data(void *API, int object_ID, unsigned int mode, void *data);
 ! -------------------------
 TYPE(c_ptr) FUNCTION GMT_Get_Data(API,object_ID,mode,data) BIND(C,NAME='GMT_Get_Data')
-IMPORT c_ptr,c_int
+IMPORT c_ptr, c_int
 TYPE(c_ptr),VALUE :: API,data
-INTEGER(c_int),VALUE :: object_ID,mode
+INTEGER(kind=c_int),VALUE :: object_ID,mode
 END FUNCTION
 ! -------------------------
 ! void * GMT_Read_Data(void *API, unsigned int family, unsigned int method, unsigned int geometry, unsigned int mode, double wesn[], char *input, void *data);
 ! -------------------------
 TYPE(c_ptr) FUNCTION GMT_Read_Data(API,family,method,geometry,mode,wesn,input,data) BIND(C,NAME='GMT_Read_Data')
-IMPORT c_ptr,c_int,c_double,c_char
-TYPE(c_ptr),VALUE :: API,data
-INTEGER(c_int),VALUE :: family,method,geometry,mode
-TYPE(c_ptr),VALUE :: wesn            ! if actual argument is C pointer
-! REAL(c_double) :: wesn(*)          ! if actual argument is real(8) array
-CHARACTER(1,c_char) :: input(*)
+	IMPORT c_ptr, c_int, c_double, c_char
+	TYPE(c_ptr),VALUE :: API, data
+	INTEGER(kind=c_int), VALUE :: family,method,geometry,mode
+	TYPE(c_ptr), VALUE :: wesn        ! if actual argument is C pointer
+! REAL(kind=c_double) :: wesn(*)          ! if actual argument is real(8) array
+	CHARACTER(len=1,kind=c_char) :: input(*)
 END FUNCTION
 ! -------------------------
 ! void * GMT_Retrieve_Data(void *API, int object_ID);
 ! -------------------------
 TYPE(c_ptr) FUNCTION GMT_Retrieve_Data(API,object_ID) BIND(C,NAME='GMT_Retrieve_Data')
-IMPORT c_int,c_ptr
-TYPE(c_ptr),VALUE :: API
-INTEGER(c_int),VALUE :: object_ID
+	IMPORT c_int,c_ptr
+	TYPE(c_ptr),VALUE :: API
+	INTEGER(kind=c_int),VALUE :: object_ID
 END FUNCTION
 ! -------------------------
 ! void * GMT_Duplicate_Data(void *API, unsigned int family, unsigned int mode, void *data);
 ! -------------------------
 TYPE(c_ptr) FUNCTION GMT_Duplicate_Data(API,family,mode,data) BIND(C,NAME='GMT_Duplicate_Data')
-IMPORT c_int,c_ptr
-TYPE(c_ptr),VALUE :: API,data
-INTEGER(c_int),VALUE :: family,mode
+	IMPORT c_int,c_ptr
+	TYPE(c_ptr),VALUE :: API,data
+	INTEGER(kind=c_int),VALUE :: family,mode
 END FUNCTION
 ! -------------------------
 ! void * GMT_Get_Record(void *API, unsigned int mode, int *retval);
 ! -------------------------
 TYPE(c_ptr) FUNCTION GMT_Get_Record(API,mode,retval) BIND(C,NAME='GMT_Get_Record')
-IMPORT c_int,c_ptr
-TYPE(c_ptr),VALUE :: API
-INTEGER(c_int),VALUE :: mode
-INTEGER(c_int) :: retval
+	IMPORT c_int,c_ptr
+	TYPE(c_ptr),VALUE :: API
+	INTEGER(kind=c_int),VALUE :: mode
+	INTEGER(kind=c_int) :: retval
 END FUNCTION
 ! -------------------------
 ! int GMT_Destroy_Session(void *API);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Destroy_Session(API) BIND(C,NAME='GMT_Destroy_Session')
-IMPORT c_int,c_ptr
-TYPE(c_ptr),VALUE :: API
+INTEGER(kind=c_int) FUNCTION GMT_Destroy_Session(API) BIND(C,NAME='GMT_Destroy_Session')
+	IMPORT c_int, c_ptr
+	TYPE(c_ptr), VALUE :: API
 END FUNCTION
 ! -------------------------
 ! int GMT_Register_IO(void *API, unsigned int family, unsigned int method, unsigned int geometry, unsigned int direction, double wesn[], void *resource);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Register_IO(API,family,method,geometry,direction,wesn,resource) BIND(C,NAME='GMT_Register_IO')
-IMPORT c_int,c_ptr,c_double
-TYPE(c_ptr),VALUE :: API,resource
-INTEGER(c_int),VALUE :: family,method,geometry,direction
-TYPE(c_ptr),VALUE :: wesn            ! if actual argument is C pointer
-! REAL(c_double) :: wesn(*)          ! if actual argument is real(8) array
+INTEGER(kind=c_int) FUNCTION GMT_Register_IO(API,family,method,geometry,direction,wesn,resource) BIND(C,NAME='GMT_Register_IO')
+	IMPORT c_int, c_ptr, c_double
+	TYPE(c_ptr), VALUE :: API, resource
+	INTEGER(kind=c_int), VALUE :: family, method, geometry, direction
+	TYPE(c_ptr),VALUE :: wesn            ! if actual argument is C pointer
+! REAL(kind=c_double) :: wesn(*)          ! if actual argument is real(8) array
 END FUNCTION
 ! -------------------------
 ! int GMT_Init_IO(void *API, unsigned int family, unsigned int geometry, unsigned int direction, unsigned int mode, unsigned int n_args, void *args);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Init_IO(API,family,geometry,direction,mode,n_args,args) BIND(C,NAME='GMT_Init_IO')
-IMPORT c_int,c_ptr
-TYPE(c_ptr),VALUE :: API,args
-INTEGER(c_int),VALUE :: family,geometry,direction,mode,n_args
+INTEGER(kind=c_int) FUNCTION GMT_Init_IO(API,family,geometry,direction,mode,n_args,args) BIND(C,NAME='GMT_Init_IO')
+	IMPORT c_int, c_ptr
+	TYPE(c_ptr),VALUE :: API,args
+	INTEGER(kind=c_int),VALUE :: family,geometry,direction,mode,n_args
 END FUNCTION
 ! -------------------------
 ! int GMT_Begin_IO(void *API, unsigned int family, unsigned int direction, unsigned int header);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Begin_IO(API,family,direction,header) BIND(C,NAME='GMT_Begin_IO')
+INTEGER(kind=c_int) FUNCTION GMT_Begin_IO(API,family,direction,header) BIND(C,NAME='GMT_Begin_IO')
 IMPORT c_int,c_ptr
 TYPE(c_ptr),VALUE :: API
-INTEGER(c_int),VALUE :: family,direction,header
+INTEGER(kind=c_int),VALUE :: family,direction,header
 END FUNCTION
 ! -------------------------
 ! int GMT_Status_IO(void *API, unsigned int mode);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Status_IO(API,mode) BIND(C,NAME='GMT_Status_IO')
+INTEGER(kind=c_int) FUNCTION GMT_Status_IO(API,mode) BIND(C,NAME='GMT_Status_IO')
 IMPORT c_int,c_ptr
 TYPE(c_ptr),VALUE :: API
-INTEGER(c_int),VALUE :: mode
+INTEGER(kind=c_int),VALUE :: mode
 END FUNCTION
 ! -------------------------
 ! int GMT_End_IO(void *API, unsigned int direction, unsigned int mode);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_End_IO(API,direction,mode) BIND(C,NAME='GMT_End_IO')
+INTEGER(kind=c_int) FUNCTION GMT_End_IO(API,direction,mode) BIND(C,NAME='GMT_End_IO')
 IMPORT c_int,c_ptr
 TYPE(c_ptr),VALUE :: API
-INTEGER(c_int),VALUE :: direction,mode
+INTEGER(kind=c_int),VALUE :: direction,mode
 END FUNCTION
 ! -------------------------
 ! int GMT_Put_Data(void *API, int object_ID, unsigned int mode, void *data);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Put_Data(API,object_ID,mode,data) BIND(C,NAME='GMT_Put_Data')
+INTEGER(kind=c_int) FUNCTION GMT_Put_Data(API,object_ID,mode,data) BIND(C,NAME='GMT_Put_Data')
 IMPORT c_int,c_ptr
 TYPE(c_ptr),VALUE :: API,data
-INTEGER(c_int),VALUE :: object_ID,mode
+INTEGER(kind=c_int),VALUE :: object_ID,mode
 END FUNCTION
 ! -------------------------
 ! int GMT_Write_Data(void *API, unsigned int family, unsigned int method, unsigned int geometry, unsigned int mode, double wesn[], char *output, void *data);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Write_Data(API,family,method,geometry,mode,wesn,output,data) BIND(C,NAME='GMT_Write_Data')
-IMPORT c_int,c_ptr,c_double,c_char
+INTEGER(kind=c_int) FUNCTION GMT_Write_Data(API,family,method,geometry,mode,wesn,output,data) BIND(C,NAME='GMT_Write_Data')
+IMPORT c_int, c_ptr, c_double, c_char
 TYPE(c_ptr),VALUE :: API,data
-INTEGER(c_int),VALUE :: family,method,geometry,mode
+INTEGER(kind=c_int),VALUE :: family,method,geometry,mode
 TYPE(c_ptr),VALUE :: wesn            ! if actual argument is C pointer
-! REAL(c_double) :: wesn(*)          ! if actual argument is real(8) array
-CHARACTER(1,c_char) :: output
+! REAL(kind=c_double) :: wesn(*)          ! if actual argument is real(8) array
+CHARACTER(len=1,kind=c_char) :: output
 END FUNCTION
 ! -------------------------
 ! int GMT_Destroy_Data(void *API, void *object);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Destroy_Data(API,object) BIND(C,NAME='GMT_Destroy_Data')
+INTEGER(kind=c_int) FUNCTION GMT_Destroy_Data(API,object) BIND(C,NAME='GMT_Destroy_Data')
 IMPORT c_int,c_ptr
 TYPE(c_ptr),VALUE :: API,object
 END FUNCTION
 ! -------------------------
 ! int GMT_Put_Record(void *API, unsigned int mode, void *record);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Put_Record(API,mode,record) BIND(C,NAME='GMT_Put_Record')
+INTEGER(kind=c_int) FUNCTION GMT_Put_Record(API,mode,record) BIND(C,NAME='GMT_Put_Record')
 IMPORT c_int,c_ptr
 TYPE(c_ptr),VALUE :: API,record
-INTEGER(c_int),VALUE :: mode
+INTEGER(kind=c_int),VALUE :: mode
 END FUNCTION
 ! -------------------------
 ! int GMT_Encode_ID(void *API, char *string, int object_ID);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Encode_ID(API,string,object_ID) BIND(C,NAME='GMT_Encode_ID')
-IMPORT c_int,c_ptr,c_char
-TYPE(c_ptr),VALUE :: API
-CHARACTER(1,c_char) :: string(*)
-INTEGER(c_int),VALUE :: object_ID
+INTEGER(kind=c_int) FUNCTION GMT_Encode_ID(API,string,object_ID) BIND(C,NAME='GMT_Encode_ID')
+	IMPORT c_int, c_ptr, c_char
+	TYPE(c_ptr), VALUE :: API
+	CHARACTER(len=1, kind=c_char) :: string(*)
+	INTEGER(kind=c_int), VALUE :: object_ID
 END FUNCTION
 ! -------------------------
 ! int GMT_Get_Row(void *API, int rec_no, struct GMT_GRID *G, float *row);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Get_Row(API,rec_no,G,row) BIND(C,NAME='GMT_Get_Row')
-IMPORT c_int,c_ptr
-TYPE(c_ptr),VALUE :: API
-INTEGER(c_int),VALUE :: rec_no
-TYPE(c_ptr),VALUE :: G               ! struct GMT_GRID *
-TYPE(c_ptr),VALUE :: row             ! float *
+INTEGER(kind=c_int) FUNCTION GMT_Get_Row(API,rec_no,G,row) BIND(C,NAME='GMT_Get_Row')
+	IMPORT c_int, c_ptr
+	TYPE(c_ptr), VALUE :: API
+	INTEGER(kind=c_int), VALUE :: rec_no
+	TYPE(c_ptr), VALUE :: G               ! struct GMT_GRID *
+	TYPE(c_ptr), VALUE :: row             ! float *
 END FUNCTION
 ! -------------------------
 ! int GMT_Put_Row(void *API, int rec_no, struct GMT_GRID *G, float *row);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Put_Row(API,rec_no,G,row) BIND(C,NAME='GMT_Put_Row')
-IMPORT c_int,c_ptr
-TYPE(c_ptr),VALUE :: API
-INTEGER(c_int),VALUE :: rec_no
-TYPE(c_ptr),VALUE :: G               ! struct GMT_GRID *
-TYPE(c_ptr),VALUE :: row             ! float *
+INTEGER(kind=c_int) FUNCTION GMT_Put_Row(API,rec_no,G,row) BIND(C,NAME='GMT_Put_Row')
+	IMPORT c_int, c_ptr
+	TYPE(c_ptr), VALUE :: API
+	INTEGER(kind=c_int), VALUE :: rec_no
+	TYPE(c_ptr), VALUE :: G               ! struct GMT_GRID *
+	TYPE(c_ptr), VALUE :: row             ! float *
 END FUNCTION
 ! -------------------------
 ! int GMT_Set_Comment(void *API, unsigned int family, unsigned int mode, void *arg, void *data);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Set_Comment(API,family,mode,arg,data) BIND(C,NAME='GMT_Set_Comment')
-IMPORT c_int,c_ptr
-TYPE(c_ptr),VALUE :: API,arg,data
-INTEGER(c_int),VALUE :: family,mode
+INTEGER(kind=c_int) FUNCTION GMT_Set_Comment(API,family,mode,arg,data) BIND(C,NAME='GMT_Set_Comment')
+	IMPORT c_int, c_ptr
+	TYPE(c_ptr), VALUE :: API,arg, data
+	INTEGER(kind=c_int), VALUE :: family,mode
 END FUNCTION
 ! -------------------------
 ! int GMT_Get_ID(void *API, unsigned int family, unsigned int direction, void *resource);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Get_ID(API,family,direction,resource) BIND(C,NAME='GMT_Get_ID')
-IMPORT c_int,c_ptr
-TYPE(c_ptr),VALUE :: API,resource
-INTEGER(c_int),VALUE :: family,direction
+INTEGER(kind=c_int) FUNCTION GMT_Get_ID(API,family,direction,resource) BIND(C,NAME='GMT_Get_ID')
+	IMPORT c_int, c_ptr
+	TYPE(c_ptr), VALUE :: API, resource
+	INTEGER(kind=c_int),VALUE :: family, direction
 END FUNCTION
 ! ----------------------------------------------------------------------
 ! 2 functions to relate (row,col) to a 1-D index and to precompute equidistant coordinates for grids and images 
 ! ----------------------------------------------------------------------
 ! int64_t GMT_Get_Index(void *API, struct GMT_GRID_HEADER *header, int row, int col);
 ! -------------------------
-INTEGER(c_int64_t) FUNCTION GMT_Get_Index(API,header,row,col) BIND(C,NAME='GMT_Get_Index')
-IMPORT c_int64_t,c_int,c_ptr
-TYPE(c_ptr),VALUE :: API
-TYPE(c_ptr),VALUE :: header          ! struct GMT_GRID_HEADER *
-INTEGER(c_int),VALUE :: row,col
+INTEGER(kind=c_int64_t) FUNCTION GMT_Get_Index(API,header,row,col) BIND(C,NAME='GMT_Get_Index')
+	IMPORT c_int64_t, c_int, c_ptr
+	TYPE(c_ptr), VALUE :: API
+	TYPE(c_ptr), VALUE :: header          ! struct GMT_GRID_HEADER *
+	INTEGER(kind=c_int), VALUE :: row,col
 END FUNCTION
 ! -------------------------
 ! double * GMT_Get_Coord(void *API, unsigned int family, unsigned int dim, void *container);
 ! -------------------------
 TYPE(c_ptr) FUNCTION GMT_Get_Coord(API,family,dim,container) BIND(C,NAME='GMT_Get_Coord')
-IMPORT c_int,c_ptr
-TYPE(c_ptr),VALUE :: API,container
-INTEGER(c_int),VALUE :: family,dim
+	IMPORT c_int, c_ptr
+	TYPE(c_ptr), VALUE :: API,container
+	INTEGER(kind=c_int), VALUE :: family,dim
 END FUNCTION
 ! ----------------------------------------------------------------------
 ! 6 functions to show and inquire about GMT common options, GMT default settings, convert strings to doubles, and message and report printing
 ! ----------------------------------------------------------------------
 ! int GMT_Option(void *API, char *options);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Option(API,options) BIND(C,NAME='GMT_Option')
-IMPORT c_int,c_ptr,c_char
-TYPE(c_ptr),VALUE :: API
-CHARACTER(1,c_char) :: options(*)
+INTEGER(kind=c_int) FUNCTION GMT_Option(API,options) BIND(C,NAME='GMT_Option')
+	IMPORT c_int, c_ptr, c_char
+	TYPE(c_ptr),VALUE :: API
+	CHARACTER(len=1,kind=c_char) :: options(*)
 END FUNCTION
 ! -------------------------
 ! int GMT_Get_Common(void *API, unsigned int option, double *par);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Get_Common(API,option,par) BIND(C,NAME='GMT_Get_Common')
-IMPORT c_int,c_ptr
-TYPE(c_ptr),VALUE :: API
-INTEGER(c_int),VALUE :: option
-TYPE(c_ptr),VALUE :: par             ! double *
+INTEGER(kind=c_int) FUNCTION GMT_Get_Common(API,option,par) BIND(C,NAME='GMT_Get_Common')
+	IMPORT c_int, c_ptr
+	TYPE(c_ptr), VALUE :: API
+	INTEGER(kind=c_int), VALUE :: option
+	TYPE(c_ptr), VALUE :: par             ! double *
 END FUNCTION
 ! -------------------------
 ! int GMT_Get_Default(void *API, char *keyword, char *value);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Get_Default(API,keyword,value) BIND(C,NAME='GMT_Get_Default')
-IMPORT c_int,c_ptr,c_char
-TYPE(c_ptr),VALUE :: API
-CHARACTER(1,c_char) :: keyword(*),value(*)
+INTEGER(kind=c_int) FUNCTION GMT_Get_Default(API,keyword,value) BIND(C,NAME='GMT_Get_Default')
+	IMPORT c_int, c_ptr, c_char
+	TYPE(c_ptr), VALUE :: API
+	CHARACTER(len=1, kind=c_char) :: keyword(*), value(*)
 END FUNCTION
 ! -------------------------
 ! int GMT_Get_Value(void *API, char *arg, double *par);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Get_Value(API,arg,par) BIND(C,NAME='GMT_Get_Value')
-IMPORT c_int,c_ptr,c_char
-TYPE(c_ptr),VALUE :: API
-CHARACTER(1,c_char) :: arg(*)
-TYPE(c_ptr),VALUE :: par             ! double *
+INTEGER(kind=c_int) FUNCTION GMT_Get_Value(API,arg,par) BIND(C,NAME='GMT_Get_Value')
+	IMPORT c_int, c_ptr, c_char
+	TYPE(c_ptr), VALUE :: API
+	CHARACTER(len=1, kind=c_char) :: arg(*)
+	TYPE(c_ptr), VALUE :: par             ! double *
 END FUNCTION
 ! -------------------------
 ! int GMT_Report(void *API, unsigned int level, char *message, ...);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Report(API,level,message) BIND(C,NAME='GMT_Report')
-IMPORT c_int,c_ptr,c_char
-TYPE(c_ptr),VALUE :: API
-INTEGER(c_int),VALUE :: level
-CHARACTER(1,c_char) :: message(*)
+INTEGER(kind=c_int) FUNCTION GMT_Report(API,level,message) BIND(C,NAME='GMT_Report')
+	IMPORT c_int, c_ptr, c_char
+	TYPE(c_ptr), VALUE :: API
+	INTEGER(kind=c_int), VALUE :: level
+	CHARACTER(len=1, kind=c_char) :: message(*)
 END FUNCTION
 ! -------------------------
 ! int GMT_Message(void *API, unsigned int mode, char *format, ...);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Message(API,mode,format) BIND(C,NAME='GMT_Message')
-IMPORT c_int,c_ptr,c_char
-TYPE(c_ptr),VALUE :: API
-INTEGER(c_int),VALUE :: mode
-CHARACTER(1,c_char) :: format(*)
+INTEGER(kind=c_int) FUNCTION GMT_Message(API,mode,format) BIND(C,NAME='GMT_Message')
+	IMPORT c_int, c_ptr, c_char
+	TYPE(c_ptr), VALUE :: API
+	INTEGER(kind=c_int), VALUE :: mode
+	CHARACTER(len=1, kind=c_char) :: format(*)
 END FUNCTION
 ! ----------------------------------------------------------------------
 ! 1 function to list or call the core, optional supplemental, and custom GMT modules
 ! ----------------------------------------------------------------------
 ! int GMT_Call_Module(void *API, const char *module, int mode, void *args);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_Call_Module(API,module,mode,args) BIND(C,NAME='GMT_Call_Module')
-IMPORT c_int,c_ptr,c_char
-TYPE(c_ptr),VALUE :: API
-CHARACTER(1,c_char) :: module(*)
-INTEGER(c_int),VALUE :: mode
-CHARACTER(1,c_char) :: args(*)       ! if actual argument is string
+INTEGER(kind=c_int) FUNCTION GMT_Call_Module(API,module,mode,args) BIND(C,NAME='GMT_Call_Module')
+	IMPORT c_int, c_ptr, c_char
+	TYPE(c_ptr), VALUE :: API
+	CHARACTER(len=1, kind=c_char) :: module(*)
+	INTEGER(kind=c_int), VALUE :: mode
+	CHARACTER(len=1, kind=c_char) :: args(*)       ! if actual argument is string
 ! TYPE(c_ptr),VALUE :: args          ! if actual argument is C pointer
 END FUNCTION
 ! ----------------------------------------------------------------------
@@ -581,31 +581,31 @@ INTERFACE
 ! -------------------------
 ! int GMT_F77_readgrdinfo_(unsigned int dim[], double wesn[], double inc[], char *title, char *remark, char *file);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_F77_readgrdinfo(dim,wesn,inc,title,remark,file) BIND(C,NAME='GMT_F77_readgrdinfo_')
-IMPORT c_int,c_float,c_double,c_char
-INTEGER(c_int) :: dim(*)
-REAL(c_double) :: wesn(*),inc(*)
-CHARACTER(1,c_char) :: title(*),remark(*),file(*)
+INTEGER(kind=c_int) FUNCTION GMT_F77_readgrdinfo(dim,wesn,inc,title,remark,file) BIND(C,NAME='GMT_F77_readgrdinfo_')
+	IMPORT c_int, c_float, c_double, c_char
+	INTEGER(kind=c_int) :: dim(*)
+	REAL(kind=c_double) :: wesn(*), inc(*)
+	CHARACTER(len=1,kind=c_char) :: title(*), remark(*), file(*)
 END FUNCTION
 ! -------------------------
 ! int GMT_F77_readgrd_(float *array, unsigned int dim[], double wesn[], double inc[], char *title, char *remark, char *file);
 ! -------------------------
-INTEGER(c_int) FUNCTION GMT_F77_readgrd(array,dim,wesn,inc,title,remark,file) BIND(C,NAME='GMT_F77_readgrd_')
-IMPORT c_int,c_float,c_double,c_char
-REAL(c_float) :: array(*)
-INTEGER(c_int) :: dim(*)
-REAL(c_double) :: wesn(*),inc(*)
-CHARACTER(1,c_char) :: title(*),remark(*),file(*)
+INTEGER(kind=c_int) FUNCTION GMT_F77_readgrd(array,dim,wesn,inc,title,remark,file) BIND(C,NAME='GMT_F77_readgrd_')
+	IMPORT c_int, c_float, c_double, c_char
+	REAL(kind=c_float) :: array(*)
+	INTEGER(kind=c_int) :: dim(*)
+	REAL(kind=c_double) :: wesn(*), inc(*)
+	CHARACTER(len=1, kind=c_char) :: title(*), remark(*), file(*)
 END FUNCTION
 ! -------------------------
 ! int GMT_F77_writegrd_(float *array, unsigned int dim[], double wesn[], double inc[], char *title, char *remark, char *file);
 ! ----------------------------------------------------------------------
-INTEGER(c_int) :: FUNCTION GMT_F77_writegrd(array,dim,wesn,inc,title,remark,file) BIND(C,NAME='GMT_F77_writegrd_')
-IMPORT c_int,c_float,c_double,c_char
-REAL(c_float) :: array(*)
-INTEGER(c_int) :: dim(*)
-REAL(c_double) :: wesn(*),inc(*)
-CHARACTER(1,c_char) :: title(*),remark(*),file(*)
+INTEGER(kind=c_int) FUNCTION GMT_F77_writegrd(array,dim,wesn,inc,title,remark,file) BIND(C,NAME='GMT_F77_writegrd_')
+	IMPORT c_int, c_float, c_double, c_char
+	REAL(kind=c_float) :: array(*)
+	INTEGER(kind=c_int) :: dim(*)
+	REAL(kind=c_double) :: wesn(*), inc(*)
+	CHARACTER(len=1, kind=c_char) :: title(*), remark(*), file(*)
 END FUNCTION
 ! ----------------------------------------------------------------------
 END INTERFACE

@@ -5,3 +5,11 @@
 
 2014-02-09	esuarez
 		Tidying up. Created trunk/ hierarchy and moved files there.
+
+2014-02-09	esuarez
+		mGMT.f90: Removed the :: in FUNCTION GMT_F77_writegrd.
+			  Added some tabs.
+			  Added kind= and len=.
+
+2014-02-09	esuarez
+		Created Makefiles and README.

@@ -1,0 +1,8 @@
+
+GMT FORTRAN README
+
+1. Compiling
+
+To compile you must edit src/Make.inc and change the variables GMT_INSTALLL_DIR and DIR_LIBS
+
+Then make.
