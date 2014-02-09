@@ -1,0 +1,7 @@
+-----------------------------------------------------------------------------------------
+        $Id$
+        Contains changes made to the data files under gmt-fortran/trunk etc
+-----------------------------------------------------------------------------------------
+
+2014-02-09	esuarez
+		Tidying up. Created trunk/ hierarchy and moved files there.

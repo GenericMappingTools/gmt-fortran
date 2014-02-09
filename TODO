@@ -1,0 +1,27 @@
+GMT API for Fortran TODO
+
+- mGMT.f90: more derived types (ready GMT_VECTOR and GMT_MATRIX only)
+- mGMT.f90: more interfaces (12 secondary functions for argument and option parsing, 8 GMT_FFT_* functions)
+- test: reading from files, streams, FDESC
+- test: save postscript thru API
+- test Fortran interfaces:
+  GMT_PALETTE: struct type var[n]
+  GMT_Get_Coord: double *
+  GMT_Get_Row, GMT_Put_Row
+
+---
+
+Notes
+- Attached mGMT.f90 implements Fortran interfaces to most of C GMT API functions using Fortran 2003 features. It is a way different from that of 3 GMT API functions (GMT_F77_*) that target Fortran 77 users. mGMT.f90 (when debugged and finished) allows to access the whole C GMT API.
+- Attached mGMT.f90 does not implement interfaces for 12 secondary functions for argument and option parsing and 8 GMT_FFT_* functions. Moreover, it is debugged only to the extent to support attached examples; in other parts, there can be typos and other bugs.
+- The way how to handle C unions on Fortran side (to the extent that GMT API requires) is extracted to attached pair of codes test-union-c.c and test-union-f.f90.
+- I expect that args in GMT_Module_Call is sufficient to be a string only on Fortran side; using linked lists is slightly exotic in Fortran. It would also complicate the Fortran interface: the type of args could not be a comfortable CHARACTER but rather TYPE(c_ptr).
+- A similar case are some double arrays (wesn, inc). They should be better declared as array on Fortran side but as such they could not send NULL values to C API. It is my hope GMT developers will give to 0. values in all array elements the same meaning as NULL in array pointer bears. Then, the TYPE(c_ptr) declaration for wesn and inc in mGMT.f90 could be replaced by native REAL(8) arrays.
+- Another Fortran-inspired request for GMT developers: names of enum value GMT_DUPLICATE_DATA and function GMT_Duplicate_Data pose a problem to case-insensitive Fortran. In mGMT.f90, the former received a temporary name GMT_DUPLICATE_DATA_ENUM.
+- I like simple INTEGER(c_int) for enum types on Fortran side (and default INTEGERs for int literals) instead of rather clumsy declarations INTEGER(KIND(SomeEnumValue)).
+- Unsigned ints are not available in any Fortran standard. No problem, a lower half of unsigned extent should have the same math values as signed INTEGERs that are used in mGMT.f90.
+- Zero-terminated C strings are a pain in Fortran: (a) when passing Fortran strings to C, an explicit c_null_char has to be appended to strings, (b) when using C strings in some contexts in Fortran, \0 must be cut - especially, when GMT_Call_Module' args are constructed, special GMT names should be specified as filename(1:15).
+- Variable argument lists in GMT_Report and GMT_Message are not interoperable. No problem, reported strings can be formatted on Fortran side and sent as a single string. A fixed number of arguments in interfaces of those functions on Fortran side is satisfactory.
+- PGI C reports a warning when compiling the examples: PGC-W-0221-Redefinition of symbol SIZE_MAX.
+- In z4.c/z4.f90, there is a manifestation of an actual feature/bug of C GMT API - a need of double registration of a GRD file that is used twice. Double registration for a CPT file seems not needed within the example.
+- In z5.c, there is an attempt to test a GMT_MATRIX structure. There is apparently working initialization of GMT_MATRIX struct, but a test with the GMP API counterpart of "gmtmath -T Ab.dat LSQFIT =" seems ahead of the game.
