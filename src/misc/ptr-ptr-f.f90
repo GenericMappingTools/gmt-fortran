@@ -1,4 +1,4 @@
-! $Id:$
+! $Id$
 ! ----------------------------------------------------------------------
 ! Fortran handling of 
 ! .. float, float*, float** function arguments

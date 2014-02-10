@@ -1,4 +1,4 @@
-! $Id:$
+! $Id$
 ! ----------------------------------
 ! Writes data for example ex03*
 ! Compile: gfortran ex03-xyz.f90

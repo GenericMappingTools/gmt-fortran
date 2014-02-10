@@ -1,4 +1,4 @@
-# $Id:#
+# $Id$
 
 DIRS = ex01-psxy ex02-pscoast ex03-grdimage
 
