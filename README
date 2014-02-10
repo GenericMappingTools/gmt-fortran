@@ -1,8 +1,34 @@
-
 GMT FORTRAN README
+======================================================
+How to call GMT5 API functions from Fortran 2003 codes
+======================================================
 
-1. Compiling
+GMT5 Fortran interoperability is established by a Fortran module 
+	module gmt
+with enumerations, derived types and interfaces
+compatible with their counterparts from header files of GMT5.
 
-To compile you must edit src/Make.inc and change the variables GMT_INSTALLL_DIR and DIR_LIBS
+Get it by
+	svn checkout svn://gmtserver.soest.hawaii.edu/gmt-fortran gmt-fortran
 
-Then make.
+Find it in the source file
+	gmt.f90
+
+Access it by the statement
+	use gmt
+
+Compile it by a Fortran compiler with the iso_c_binding support, e.g.,
+	gfortran gmt.f90 my_GMT_code.f90 -Lpath-to-gmt-lib -lgmt
+Tested with GNU, Intel, PGI and g95 on Linux and Windows.
+
+Check examples of matching shell scripts, C codes and Fortran codes
+received by svn along with the gmt.f90 in
+	src/examples
+
+Send feedback to
+	http://gmt.soest.hawaii.edu/projects/gmt-fortran-api
+
+Enjoy all those 
+	type(c_ptr), null(), c_null_ptr, c_null_char, c_loc, c_f_pointer and c_associated,
+	type(GMT_VECTOR), GMT_Create_Session, GMT_Create_Data, GMT_Get_ID, GMT_Encode_ID and GMT_Call_Module,
+	and more.

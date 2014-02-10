@@ -1,0 +1,11 @@
+C/Fortran couples to illustrate 
+how to handle on the Fortran side...
+
+1) ptr-ptr-*
+- float, float*, float** function arguments
+- float, float*, float** struct components 
+
+2) union-*
+- C unions (how to pass data to C unions)
+
+Run make, try and make clean.
