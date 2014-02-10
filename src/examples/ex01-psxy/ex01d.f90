@@ -1,4 +1,4 @@
-! $Id$
+! $Id:$
 ! ----------------------------------------------------------------------
 ! Test of GMT API
 ! modules gmtset, psxy and ps2raster 

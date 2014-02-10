@@ -1,4 +1,4 @@
-! $Id$
+! $Id:$
 ! ----------------------------------------------------------------------
 ! Test of GMT API
 ! modules xyz2grd, makecpt; psbasemap, grdimage, grdcontour, psscale; ps2raster

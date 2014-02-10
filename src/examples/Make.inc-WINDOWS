@@ -1,3 +1,5 @@
+# $Id:$
+
 # check or set at least these macros: 
 # path to GMT: GMT_L, GMT_W
 # compiler names and flags: CC, CCFLAGS, FC, FCFLAGS, LDFLAGS

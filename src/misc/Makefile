@@ -1,4 +1,4 @@
-# $Id$
+# $Id:$
 # ----------------------------------------------------------------------
 # Makefile for misc sources
 # svn co svn://gmtserver.soest.hawaii.edu/gmt-fortran gmt-fortran
