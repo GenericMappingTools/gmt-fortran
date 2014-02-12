@@ -1,6 +1,6 @@
 # $Id$
 
-DIRS = ex01-psxy ex02-pscoast ex03-grdimage
+DIRS = ex01 ex01-psxy ex02-pscoast ex03-grdimage
 
 all:
 	@for dir in $(DIRS); \
@@ -22,6 +22,7 @@ F:
 	done
 
 .PHONY: clean
+
 clean:
 	@for dir in $(DIRS); \
 	do \

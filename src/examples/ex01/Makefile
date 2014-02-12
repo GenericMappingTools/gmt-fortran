@@ -1,4 +1,4 @@
-# $Id$
+# $Id: Makefile 10 2014-02-10 19:50:16Z remko $
 # ----------------------------------------------------------------------
 # Makefile for C/Fortran GMT API examples
 # svn co svn://gmtserver.soest.hawaii.edu/gmt-fortran gmt-fortran
@@ -14,39 +14,22 @@
 include ../../Make.inc
 
 # "make all" rule
-all: C Fortran
-
-# "make C" rule
-C: c01a c01b c01c c01d
+all: Fortran
 
 # "make Fortran", "make F" rules
 Fortran: F
-F: f01a f01b f01c f01d
+F: example_01
 
 # rules for particular targets
-c01a: ex01a.c
-	$(CC) -o $@ $(CCFLAGS) $^ $(LDFLAGS)
-c01b: ex01b.c
-	$(CC) -o $@ $(CCFLAGS) $^ $(LDFLAGS)
-c01c: ex01c.c
-	$(CC) -o $@ $(CCFLAGS) $^ $(LDFLAGS)
-c01d: ex01d.c
-	$(CC) -o $@ $(CCFLAGS) $^ $(LDFLAGS)
-f01a: ex01a.f90
-	$(FC) -o $@ $(FCFLAGS) $^ $(LDFLAGS)
-f01b: ex01b.f90
-	$(FC) -o $@ $(FCFLAGS) $^ $(LDFLAGS)
-f01c: ex01c.f90
-	$(FC) -o $@ $(FCFLAGS) $^ $(LDFLAGS)
-f01d: ex01d.f90
+example_01: example_01.f90
 	$(FC) -o $@ $(FCFLAGS) $^ $(LDFLAGS)
 
 # "make clean" rule
 .PHONY: clean
 
 clean:
-	-rm -f *.o *.obj *.mod *.dwf *.pdb
-	-rm -f c??? c???.exe f??? f???.exe
+	-rm -f *.o *.obj *.dwf *.pdb
+	-rm -f c??? c???.exe f??? f???.exe example_??
 	-rm -f ex*.grd ex*.cpt
 	-rm -f ex*.ps ex*.png
 	-rm -f gmt.conf gmt.history
