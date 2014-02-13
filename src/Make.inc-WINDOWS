@@ -7,14 +7,16 @@
 # path to GMT root directory, include files and libraries (Linux/Windows)
 GMT_L             = /opt/gmt/5.1.0
 GMT_W             = c:\programs\gmt5
-INC_GMT_L         = $(GMT_L)/include/gmt
-INC_GMT_W         = $(GMT_W)\include\gmt
-INCL_L            = -I$(INC_GMT_L)
-INCL_W            = -I$(INC_GMT_W)
-LIBS_L            = -L$(GMT_L)/lib -lgmt -lpsl
-LIBS_W            = -L$(GMT_W)\lib -lgmt -lpsl
-INST_MOD_L        = $(INC_GMT_L)
-INST_MOD_W        = $(INC_GMT_W)
+INC_DIR_GMT_L     = $(GMT_L)/include/gmt
+INC_DIR_GMT_W     = $(GMT_W)\include\gmt
+INCL_L            = -I$(INC_DIR_GMT_L)
+INCL_W            = -I$(INC_DIR_GMT_W)
+LIB_DIR_GMT_L     = $(GMT_L)/lib
+LIB_DIR_GMT_W     = $(GMT_L)\lib
+LIBS_L            = -L$(LIB_DIR_GMT_L) -lgmt -lpsl -lgmtmod
+LIBS_W            = -L$(LIB_DIR_GMT_W) -lgmt -lpsl -lgmtmod
+INST_MOD_L        = $(INC_DIR_GMT_L)
+INST_MOD_W        = $(INC_DIR_GMT_W)
 
 # C compilers: GNU/Intel/PGI (Linux/Windows)
 CC_GNU            = gcc
@@ -34,8 +36,8 @@ CCFLAGS_PGI_W     = -g $(INCL_W)
 FC_GNU            = gfortran
 FCFLAGS_GNU_L     = -std=f2003 -Wall -pedantic -g $(INCL_L)
 FCFLAGS_GNU_W     = -std=f2003 -Wall -pedantic -g $(INCL_W)
-FCFLAGS_GNU_MOD_L = -std=f2003 -Wall -pedantic -g -c -fsyntax-only
-FCFLAGS_GNU_MOD_W = -std=f2003 -Wall -pedantic -g -c -fsyntax-only
+FCFLAGS_GNU_MOD_L = -std=f2003 -Wall -pedantic -g -c
+FCFLAGS_GNU_MOD_W = -std=f2003 -Wall -pedantic -g -c
 #
 # Intel ifort
 #
@@ -62,3 +64,5 @@ FC                = $(FC_GNU)
 FCFLAGS           = $(FCFLAGS_GNU_W)
 LDFLAGS           = $(LIBS_L)
 FCFLAGS_MOD       = $(FCFLAGS_GNU_MOD_W)
+INC_DIR_GMT       = $(INC_DIR_GMT_W)
+LIB_DIR_GMT       = $(LIB_DIR_GMT_W)

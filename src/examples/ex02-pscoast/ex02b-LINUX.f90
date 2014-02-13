@@ -33,7 +33,7 @@ x(1)=  14.; y(1)=  50.
 x(2)=-158.; y(2)=  21
 
 ! create GMT session
-API=GMT_Create_Session("Test"//c_null_char,2,0,0)
+API=GMT_Create_Session("Test",2,0,0)
 print *,"Create_Session: ",c_associated(API)
 
 ! create GMT_VECTOR
@@ -64,7 +64,7 @@ print *,"Create_Data cols&rows: ",Fv%n_columns,Fv%n_rows
 ! call pscoast
 write(args,"(100(a,1x))") "-JG-100/50/10c -R0/360/-90/90 -Bg30/g15 -Dl -Gsandybrown -Slightskyblue -P -K","->ex02.ps"
 print *,"args = ",trim(args)
-ierr=GMT_Call_Module(API,"pscoast"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"pscoast",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","pscoast",ierr
 
 ! call psxy for points
@@ -72,7 +72,7 @@ idIn=GMT_Get_ID(API,GMT_IS_DATASET,GMT_IN,v);
 ierr=GMT_Encode_ID(API,filename,idIn)
 write(args,"(100(a,1x))") filename(:15),"-J -R -Gyellow -Sc7p -W1p,blue -O -K","->>ex02.ps"
 print *,"args = ",trim(args)
-ierr=GMT_Call_Module(API,"psxy"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"psxy",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","psxy",ierr
 
 ! call psxy for lines
@@ -81,18 +81,18 @@ print *,"Call_Module: ","psxy",ierr
 ! ierr=GMT_Encode_ID(API,filename2,idIn2)
 ! write(args,"(100(a,1x))") filename2(:15),"-J -R -W1p,blue -O -K","->>ex02.ps"
 ! print *,"args = ",trim(args)
-! ierr=GMT_Call_Module(API,"psxy"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+! ierr=GMT_Call_Module(API,"psxy",GMT_MODULE_CMD,args)
 ! print *,"Call_Module: ","psxy",ierr
 
 ! call pstext
 filename="ex02-text.dat"
 write(args,"(100(a,1x))") trim(filename),"-J -R -D0.25c/-0.4c -O","->>ex02.ps"
 print *,"args = ",trim(args)
-ierr=GMT_Call_Module(API,"pstext"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"pstext",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","pstext",ierr
 
 ! call ps2raster
-ierr=GMT_Call_Module(API,"ps2raster"//c_null_char,GMT_MODULE_CMD,"ex02.ps -Tg"//c_null_char)
+ierr=GMT_Call_Module(API,"ps2raster",GMT_MODULE_CMD,"ex02.ps -Tg")
 print *,"Call_Module: ","ps2raster",ierr
 
 ! clean up

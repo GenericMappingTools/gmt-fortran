@@ -41,7 +41,7 @@ coly=spread(y,1,nx+1)
 z=a*colx**2+b*coly**2
 
 ! create GMT session
-API=GMT_Create_Session("Test"//c_null_char,2,0,0);
+API=GMT_Create_Session("Test",2,0,0);
 print *,"Create_Session: ",c_associated(API)
 
 ! create GMT data
@@ -73,7 +73,7 @@ ierr=GMT_Encode_ID(API,fileGRD,idGRD)
 print *,"GRD Register_ID & Encode ID:",idGRD,fileGRD
 write (args,"(100(a,1x))") fileIn(:15),"-G"//fileGRD(:15),"-R-2/2/-1.2/1.2 -I.02/.02"
 print *,"args = ",trim(args)
-ierr=GMT_Call_Module(API,"xyz2grd"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"xyz2grd",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","xyz2grd",ierr
 pGRD=GMT_Retrieve_Data(API,idGRD)
 idGRD=GMT_Register_IO(API,GMT_IS_GRID,GMT_IS_REFERENCE,GMT_IS_SURFACE,GMT_IN,c_null_ptr,pGRD)
@@ -97,7 +97,7 @@ ierr=GMT_Encode_ID(API,fileCPT,idCPT)
 print *,"CPT Register_ID & Encode ID: ",idCPT,fileCPT
 write (args,"(100(a,1x))") "-Crainbow -T0/10/2 -Z ->"//fileCPT(:15)
 print *,trim(args)
-ierr=GMT_Call_Module(API,"makecpt"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"makecpt",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","makecpt",ierr
 pCPT=GMT_Retrieve_Data(API,idCPT)
 idCPT=GMT_Register_IO(API,GMT_IS_CPT,GMT_IS_REFERENCE,GMT_IS_NONE,GMT_IN,c_null_ptr,pCPT)
@@ -107,28 +107,28 @@ print *,"CPT Retrive_Data & reRegister_IO: ",c_associated(pCPT),idCPT,fileCPT
 ! create PostScript
 write (args,"(100(a,1x))") "-JX14c/8c -R -Ba0.5::/a0.5::WeSn:.Fig.: -P -K ->ex03.ps"
 print *,trim(args)
-ierr=GMT_Call_Module(API,"psbasemap"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"psbasemap",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","psbasemap",ierr
 
 write (args,"(100(a,1x))") fileGRD(:15),"-J -R -B -C"//fileCPT(:15),"-O -K ->>ex03.ps"
 print *,trim(args)
-ierr=GMT_Call_Module(API,"grdimage"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"grdimage",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","grdimage",ierr
 
 write (args,"(100(a,1x))") fileGRD2(:15),"-J -R -B -C2 -O -K ->>ex03.ps"
 print *,trim(args)
-ierr=GMT_Call_Module(API,"grdcontour"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"grdcontour",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","grdcontour",ierr
 
 write (args,"(100(a,1x))") "-D15c/4c/8c/1c -C"//fileCPT(:15),"-O ->>ex03.ps"
 print *,trim(args)
-ierr=GMT_Call_Module(API,"psscale"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"psscale",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","psscale",ierr
 
 ! create PNG
 write(args,"(100(a,1x))") "ex03.ps -Tg"
 print *,"args = ",trim(args)
-ierr=GMT_Call_Module(API,"ps2raster"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"ps2raster",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","ps2raster",ierr
 
 ! clean up

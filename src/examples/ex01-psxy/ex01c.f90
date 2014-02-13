@@ -31,14 +31,14 @@ character(100,c_char) :: args
 integer(c_int) :: idIn,ierr
 
 ! create GMT session
-API=GMT_Create_Session("Test"//c_null_char,2,0,0);
+API=GMT_Create_Session("Test",2,0,0);
 print *,"Create_Session: ",c_associated(API)
 
 ! import data from file
 filename="ex01-xy.dat"
 mode=0
 wesn=0.
-D=GMT_Read_Data(API,GMT_IS_DATASET,GMT_IS_FILE,GMT_IS_POINT,mode,c_null_ptr,trim(filename)//c_null_char,c_null_ptr)
+D=GMT_Read_Data(API,GMT_IS_DATASET,GMT_IS_FILE,GMT_IS_POINT,mode,c_null_ptr,trim(filename),c_null_ptr)
 print *,"Read_Data: ",c_associated(D)
 
 ! optional: check data in GMT_DATASET - Windows gfortran and ifort ok, otherwise (Linux, g95, pgfortran always) run-time error
@@ -69,11 +69,11 @@ print *,"Encode_ID: ",filename
 ! call psxy
 write(args,"(100(a,1x))") filename(:15),"-JX16c/24c -R0/11/0/110 -B2:x:/20:y:WS:.Fig.: -Sa1c -N -P ->ex01.ps"
 print *,"args = ",trim(args)
-ierr=GMT_Call_Module(API,"psxy"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"psxy",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","psxy",ierr
 
 ! call ps2raster
-! ierr=GMT_Call_Module(API,"ps2raster"//c_null_char,GMT_MODULE_CMD,"ex01.ps -Tg"//c_null_char)
+! ierr=GMT_Call_Module(API,"ps2raster",GMT_MODULE_CMD,"ex01.ps -Tg")
 ! print *,"Call_Module: ","ps2raster",ierr
 
 ! clean up

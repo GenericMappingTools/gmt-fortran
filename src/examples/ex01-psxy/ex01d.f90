@@ -123,6 +123,6 @@ character(len_trim(string)+1,c_char) result
 if (index(string,c_null_char)>0) then       ! is string a C string?
   result=string
 else
-  result=trim(string)//c_null_char
+  result=trim(string)
 endif
 end function

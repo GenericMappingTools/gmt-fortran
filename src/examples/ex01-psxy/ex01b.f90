@@ -36,7 +36,7 @@ y(i)=i*i
 enddo
 
 ! create GMT session
-API=GMT_Create_Session("Test"//c_null_char,2,0,0);
+API=GMT_Create_Session("Test",2,0,0);
 print *,"Create_Session: ",c_associated(API)
 
 ! create GMT_VECTOR
@@ -66,11 +66,11 @@ print *,"Encode_ID: ",filename
 ! call psxy
 write(args,"(100(a,1x))") filename(:15),"-JX16c/24c -R0/11/0/110 -B2:x:/20:y:WS:.Fig.: -Sa1c -N -P ->ex01.ps"
 print *,"args = ",trim(args)
-ierr=GMT_Call_Module(API,"psxy"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"psxy",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","psxy",ierr
 
 ! call ps2raster
-ierr=GMT_Call_Module(API,"ps2raster"//c_null_char,GMT_MODULE_CMD,"ex01.ps -Tg"//c_null_char)
+ierr=GMT_Call_Module(API,"ps2raster",GMT_MODULE_CMD,"ex01.ps -Tg")
 print *,"Call_Module: ","ps2raster",ierr
 
 ! clean up

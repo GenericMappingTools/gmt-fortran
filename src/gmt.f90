@@ -18,6 +18,8 @@
 module gmt
 ! ----------------------------------------------------------------------
 use iso_c_binding
+implicit none
+public :: GMT_Call_Module
 ! ----------------------------------------------------------------------
 ! gmt_define.h enumerations
 ! ----------------------------------------------------------------------
@@ -622,14 +624,14 @@ end function
 ! ----------------------------------------------------------------------
 ! int GMT_Call_Module(void *API, const char *module, int mode, void *args);
 ! ----------------------------------
-integer(c_int) function GMT_Call_Module(API,module,mode,args) bind(c,name='GMT_Call_Module')
+integer(c_int) function GMT_Call_Module_C(API,module,mode,args) bind(c,name='GMT_Call_Module')
 import c_int,c_ptr,c_char
 type(c_ptr),value :: API
 character(1,c_char) :: module(*)
 integer(c_int),value :: mode
 character(1,c_char) :: args(*) ! if actual argument is string
 ! type(c_ptr),value :: args ! if actual argument is C pointer
-end function
+end function GMT_Call_Module_C
 ! ----------------------------------------------------------------------
 ! 12 secondary functions for argument and option parsing
 ! ----------------------------------------------------------------------
@@ -841,5 +843,15 @@ end function
 ! ----------------------------------
 end interface
 ! ----------------------------------------------------------------------
+contains
+   integer(c_int) function GMT_Call_Module(API, module, mode, args)
+      type(c_ptr),value :: API
+      character(len=*) :: module
+      integer(c_int),value :: mode
+      character(len=*) :: args
+      GMT_Call_Module = GMT_Call_Module_C(API, module//c_null_char, &
+                                          mode, args//c_null_char)
+! Could consider to use trim(module) and trim(args) in the above, but don’t think that’s necessary
+   end function GMT_Call_Module
 end module
 ! ----------------------------------------------------------------------

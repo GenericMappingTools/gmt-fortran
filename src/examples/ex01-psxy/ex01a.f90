@@ -17,18 +17,18 @@ character(100,c_char) :: args
 integer(c_int) :: ierr
 
 ! create GMT session
-API=GMT_Create_Session("Test"//c_null_char,2,0,0)
+API=GMT_Create_Session("Test",2,0,0)
 print *,"Create_Session: ",c_associated(API)
 
 ! call psxy
 filename="ex01-xy.dat"
 write(args,"(100(a,1x))") trim(filename),"-JX16c/24c -R0/11/0/110 -B2:x:/20:y:WS:.Fig.: -Sa1c -N -P ->ex01.ps"
 print *,"args = ",trim(args)
-ierr=GMT_Call_Module(API,"psxy"//c_null_char,GMT_MODULE_CMD,args//c_null_char)
+ierr=GMT_Call_Module(API,"psxy",GMT_MODULE_CMD,args)
 print *,"Call_Module: ","psxy",ierr
 
 ! call ps2raster
-ierr=GMT_Call_Module(API,"ps2raster"//c_null_char,GMT_MODULE_CMD,"ex01.ps -Tg"//c_null_char)
+ierr=GMT_Call_Module(API,"ps2raster",GMT_MODULE_CMD,"ex01.ps -Tg")
 print *,"Call_Module: ","ps2raster",ierr
 
 ! clean up
