@@ -13,6 +13,7 @@ all: $(INC_GMT_L)/gmt.mod
 gmt.mod: gmt.f90
 	$(FC) $(FCFLAGS_MOD) $<
 	ar rvs libgmtf.a gmt.o
+	gcc -shared -Wl,-soname,libgmtf.so.1 -o libgmtf.so.1.0.1 gmt.o
 
 C:
 	@for dir in $(DIRS); \
@@ -31,10 +32,13 @@ F:
 
 $(INC_GMT_L)/gmt.mod: gmt.mod
 	install -c -m 644 gmt.mod $(INC_DIR_GMT)/
-	install -c -m 644 libgmtf.a $(LIB_DIR_GMT)/
+	rm -f $(LIB_DIR_GMT)/libgmtf.so.1
+	rm -f $(LIB_DIR_GMT)/libgmtf.so
+	install -c -m 644 libgmtf.* $(LIB_DIR_GMT)/
+	cd $(LIB_DIR_GMT); ln -s libgmtf.so.1.0.1 libgmtf.so.1; ln -s libgmtf.so.1.0.1 libgmtf.so; ldconfig
 
 clean_module:
-	rm -f gmt.mod gmt.o libgmtmod.a
+	rm -f gmt.mod gmt.o libgmtf.*
 
 clean_examples:
 	@for dir in $(DIRS); \

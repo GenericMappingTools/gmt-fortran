@@ -34,10 +34,10 @@ CCFLAGS_PGI_W     = -g $(INCL_W)
 # GNU gfortran
 #
 FC_GNU            = gfortran
-FCFLAGS_GNU_L     = -std=f2003 -Wall -pedantic -g $(INCL_L)
-FCFLAGS_GNU_W     = -std=f2003 -Wall -pedantic -g $(INCL_W)
-FCFLAGS_GNU_MOD_L = -std=f2003 -Wall -pedantic -g -c
-FCFLAGS_GNU_MOD_W = -std=f2003 -Wall -pedantic -g -c
+FCFLAGS_GNU_L     = -std=f2008ts -Wall -pedantic -g $(INCL_L)
+FCFLAGS_GNU_W     = -std=f2008ts -Wall -pedantic -g $(INCL_W)
+FCFLAGS_GNU_MOD_L = -std=f2008ts -Wall -pedantic -fPIC -g -c
+FCFLAGS_GNU_MOD_W = -std=f2008ts -Wall -pedantic -fPIC -g -c
 #
 # Intel ifort
 #
