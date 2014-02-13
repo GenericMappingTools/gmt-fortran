@@ -5,16 +5,16 @@
 # compiler names and flags: CC, CCFLAGS, FC, FCFLAGS, LDFLAGS
 
 # path to GMT root directory, include files and libraries (Linux/Windows)
-GMT_L             = /opt/apps/GMT/GMT-5-testing
+GMT_L             = /opt/gmt/5.1.0
 GMT_W             = c:\programs\gmt5
 INC_DIR_GMT_L     = $(GMT_L)/include/gmt
 INC_DIR_GMT_W     = $(GMT_W)\include\gmt
 INCL_L            = -I$(INC_DIR_GMT_L)
 INCL_W            = -I$(INC_DIR_GMT_W)
-LIB_DIR_GMT_L     = $(GMT_L)/lib/i386-linux-gnu
+LIB_DIR_GMT_L     = $(GMT_L)/lib
 LIB_DIR_GMT_W     = $(GMT_L)\lib
-LIBS_L            = -L$(LIB_DIR_GMT_L) -lgmt -lpsl -lgmtmod
-LIBS_W            = -L$(LIB_DIR_GMT_W) -lgmt -lpsl -lgmtmod
+LIBS_L            = -L$(LIB_DIR_GMT_L) -lgmt -lpsl -lgmtf
+LIBS_W            = -L$(LIB_DIR_GMT_W) -lgmt -lpsl -lgmtf
 INST_MOD_L        = $(INC_DIR_GMT_L)
 INST_MOD_W        = $(INC_DIR_GMT_W)
 
@@ -34,10 +34,10 @@ CCFLAGS_PGI_W     = -g $(INCL_W)
 # GNU gfortran
 #
 FC_GNU            = gfortran
-FCFLAGS_GNU_L     = -std=f2008ts -Wall -pedantic -g $(INCL_L)
-FCFLAGS_GNU_W     = -std=f2008ts -Wall -pedantic -g $(INCL_W)
-FCFLAGS_GNU_MOD_L = -std=f2008ts -Wall -pedantic -g -c
-FCFLAGS_GNU_MOD_W = -std=f2008ts -Wall -pedantic -g -c
+FCFLAGS_GNU_L     = -std=f2003 -Wall -pedantic -g $(INCL_L)
+FCFLAGS_GNU_W     = -std=f2003 -Wall -pedantic -g $(INCL_W)
+FCFLAGS_GNU_MOD_L = -std=f2003 -Wall -pedantic -g -c
+FCFLAGS_GNU_MOD_W = -std=f2003 -Wall -pedantic -g -c
 #
 # Intel ifort
 #
@@ -54,8 +54,8 @@ FCFLAGS_PGI_L     = -Mstandard -Minform=inform -C -Mbounds -g
 FCFLAGS_PGI_W     = -Mstandard -Minform=inform -C -Mbounds -g
 #
 FC_G95            = g95
-FCFLAGS_G95_L     = -std=f2008ts -Wall -pedantic -g
-FCFLAGS_G95_W     = -std=f2008ts -Wall -pedantic -g
+FCFLAGS_G95_L     = -std=f2003 -Wall -pedantic -g
+FCFLAGS_G95_W     = -std=f2003 -Wall -pedantic -g
 
 # selected set of compiler names and flags
 CC                = $(CC_GNU)

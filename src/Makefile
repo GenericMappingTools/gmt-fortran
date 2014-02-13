@@ -12,7 +12,7 @@ all: $(INC_GMT_L)/gmt.mod
 
 gmt.mod: gmt.f90
 	$(FC) $(FCFLAGS_MOD) $<
-	ar rvs libgmtmod.a gmt.o
+	ar rvs libgmtf.a gmt.o
 
 C:
 	@for dir in $(DIRS); \
@@ -31,7 +31,7 @@ F:
 
 $(INC_GMT_L)/gmt.mod: gmt.mod
 	install -c -m 644 gmt.mod $(INC_DIR_GMT)/
-	install -c -m 644 libgmtmod.a $(LIB_DIR_GMT)/
+	install -c -m 644 libgmtf.a $(LIB_DIR_GMT)/
 
 clean_module:
 	rm -f gmt.mod gmt.o libgmtmod.a

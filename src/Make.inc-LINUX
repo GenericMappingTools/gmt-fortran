@@ -13,8 +13,8 @@ INCL_L            = -I$(INC_DIR_GMT_L)
 INCL_W            = -I$(INC_DIR_GMT_W)
 LIB_DIR_GMT_L     = $(GMT_L)/lib
 LIB_DIR_GMT_W     = $(GMT_L)\lib
-LIBS_L            = -L$(LIB_DIR_GMT_L) -lgmt -lpsl -lgmtmod
-LIBS_W            = -L$(LIB_DIR_GMT_W) -lgmt -lpsl -lgmtmod
+LIBS_L            = -L$(LIB_DIR_GMT_L) -lgmt -lpsl -lgmtf
+LIBS_W            = -L$(LIB_DIR_GMT_W) -lgmt -lpsl -lgmtf
 INST_MOD_L        = $(INC_DIR_GMT_L)
 INST_MOD_W        = $(INC_DIR_GMT_W)
 
