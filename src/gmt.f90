@@ -350,13 +350,13 @@ interface
 ! ----------------------------------------------------------------------
 ! void * GMT_Create_Session(char *tag, unsigned int pad, unsigned int mode, int (*print_func) (FILE *, const char *));
 ! ----------------------------------
-type(c_ptr) function GMT_Create_Session(tag,pad,mode,print_func) bind(c,name='GMT_Create_Session')
+type(c_ptr) function GMT_Create_Session_C(tag,pad,mode,print_func) bind(c,name='GMT_Create_Session')
 import c_ptr,c_char,c_int,c_funptr
 character(1,c_char) :: tag(*)
 integer(c_int),value :: pad,mode
 integer(c_int),value :: print_func ! if actual argument is integer
 ! type(c_funptr),value :: print_func ! if actual argument is C function pointer 
-end function
+end function GMT_Create_Session_C
 ! ----------------------------------
 ! void * GMT_Create_Data(void *API, unsigned int family, unsigned int geometry, unsigned int mode, uint64_t dim[], 
 ! double *wesn, double *inc, unsigned int registration, int pad, void *data);
@@ -844,10 +844,18 @@ end function
 end interface
 ! ----------------------------------------------------------------------
 contains
-   integer(c_int) function GMT_Call_Module(API, module, mode, args)
+   type(c_ptr) function GMT_Create_Session(tag, pad, mode, print_func)
+      character(len=*) :: tag
+      integer(kind=c_int), value :: pad, mode
+      integer(kind=c_int), value :: print_func ! if actual argument is integer
+      GMT_Create_Session = GMT_Create_Session_C(tag//c_null_char, pad, &
+                                                mode, print_func)
+   end function GMT_Create_Session
+   !
+   integer(kind=c_int) function GMT_Call_Module(API, module, mode, args)
       type(c_ptr),value :: API
       character(len=*) :: module
-      integer(c_int),value :: mode
+      integer(kind=c_int),value :: mode
       character(len=*) :: args
       GMT_Call_Module = GMT_Call_Module_C(API, module//c_null_char, &
                                           mode, args//c_null_char)
