@@ -1,4 +1,4 @@
-! $Id: ex02a.f90 10 2014-02-10 19:50:16Z remko $
+! $Id$
 ! ----------------------------------------------------------------------
 ! Test of GMT API
 ! modules psbasemap, pscoast, grdcontour and ps2raster

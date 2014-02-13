@@ -1,4 +1,4 @@
-# $Id: Makefile 10 2014-02-10 19:50:16Z remko $
+# $Id$
 # ----------------------------------------------------------------------
 # Makefile for C/Fortran GMT API examples
 # svn co svn://gmtserver.soest.hawaii.edu/gmt-fortran gmt-fortran
