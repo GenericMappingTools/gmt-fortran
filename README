@@ -1,36 +1,207 @@
 $Id$
 
-GMT FORTRAN README
-======================================================
-How to call GMT5 API functions from Fortran 2003 codes
-======================================================
+GMT FORTRAN API README
+======================
 
-GMT5 Fortran interoperability is established by a Fortran module 
-	module gmt
-with enumerations, derived types and interfaces
-compatible with their counterparts from header files of GMT5.
+Quick howto
+-----------
+Using GMT5 API calls from Fortran codes can be set up with help of a Fortran program unit "module gmt". By attaching the module, a Fortran user receives access to GMT C API enumerations, structures and interfaces, and also to Fortran wrappers that make calls to the C functions easier; in particular, the iso_c_binding module can remain behind the scene. The interfaces of the Fortran wrappers are largely simplified by means of optional arguments, and the wrappers also alleviate the transfer of character arguments. Finally, a couple of Fortran subroutines is available to facilitate transfer of Fortran user arrays into GMT5 data structures.
 
-Get it by
+Get the module by
+
 	svn checkout svn://gmtserver.soest.hawaii.edu/gmt-fortran gmt-fortran
 
-Find it in the source file
-	gmt.f90
+and find it in gmt-fortran/trunk/src/gmt.f90.
 
-Access it by the statement
+Access it from your Fortran source code as in, e.g.,
+
 	use gmt
+	call sGMT_Create_Session("Test")
+	call sGMT("psxy file.dat -J -R -B ->file.ps")
+	call sGMT_Destroy_Session()
+	end program
 
-Compile it by a Fortran compiler with the iso_c_binding support, e.g.,
-	gfortran gmt.f90 my_GMT_code.f90 -Lpath-to-gmt-lib -lgmt
-Tested with GNU, Intel, PGI and g95 on Linux and Windows.
+or, with input data taken from arrays, as in
 
-Check examples of matching shell scripts, C codes and Fortran codes
-received by svn along with the gmt.f90 in
-	src/examples
+	use gmt
+	integer,parameter :: nmax=3
+	real(8) :: x(nmax)=[1,2,3],y(nmax)=[1,2,1]
+	integer(8) :: dim(2)=[2,nmax]
+	character(20) :: filedat,fileps="file.ps"
+	call sGMT_Create_Session("Test")
+	call sGMT_Create_Init_Encode(dim=dim,c1=x,c2=y,object_ID=id,string=filedat)
+	call sGMT("psxy "//filedat//" -JX8c -R0/4/0/3 -BWS+tFig. -Bx2+lx -By1+ly -Sa1c ->"//fileps)
+	call sGMT_Destroy_Session()
+	end program
 
-Send feedback to
+Compile by Fortran compilers with the iso_c_binding support by commands similar to, e.g.,
+
+	f90 gmt.f90 my_GMT_code.f90 -Lpath-to-gmt5-lib -lgmt
+
+Tested with GNU, Intel, PGI and g95 on Linux and Windows, expected to work with many other compilers, cf.
+
+	http://fortranwiki.org/fortran/show/Fortran+2003+status
+
+Check API examples of matching shell scripts, C codes and Fortran codes received along with the gmt.f90 in
+
+	gmt-fortran/trunk/src/examples-api
+
+and a few of examples ported from GMT_SHAREDIR/doc/examples in
+
+	gmt-fortran/trunk/src/examples-share-doc
+
+Look at and send feedback to
+
 	http://gmt.soest.hawaii.edu/projects/gmt-fortran-api
 
-Enjoy all those 
-	type(c_ptr), null(), c_null_ptr, c_null_char, c_loc, c_f_pointer and c_associated,
-	type(GMT_VECTOR), GMT_Create_Session, GMT_Create_Data, GMT_Get_ID, GMT_Encode_ID and GMT_Call_Module,
-	and more.
+Enjoy.
+
+More on the gmt module
+----------------------
+The Fortran module gmt consists of (1) Fortran wrapper subroutines and functions to C API functions, (2) initialization subroutines to hide explicit data transfer between user arrays and C API structures and (3) interfaces to the C API functions; moreover, C API (4) enumerations and (5) structures are ported to the module as well.
+
+(1) The high-level wrappers with simplified interface and many optional arguments hide most of interoperability tricks from the Fortran user. The wrappers have the form of both subroutines (sGMT_*) and equivalent functions (GMT_*). The most frequent C API function GMT_Call_Module can be called via super-wrappers sGMT, fGMT or GMTF. The most frequent C API argument that denotes the GMT session is optional and defaults to an internal module pointer.
+Examples of wrapper subroutines and functions: 
+
+	call sGMT_Create_Session("Test")
+	call sGMT("psxy file.dat -J -R -B ->file.ps")
+	call sGMT_Destroy_Session()
+
+	err=GMT_Create_Default_Session("Test")
+	err=fGMT("ps2raster file.ps -Tg")
+	err=GMT_Destroy_Session()
+
+(2) Initialization subroutines (sGMTF_*, with aliases sGMT_*) facilitate data transfer from Fortran user arrays to GMT structures. At present, subroutines for data transfer to GMT_VECTOR structures are available. Subroutines to populate GMT_MATRIX structures are other candidates to emerge. 
+Example how to create, initialize and encode type(GMT_VECTOR) v from user arrays x, y:
+	type(c_ptr) v; integer(8) dim(2); real(8) x(nmax),y(nmax); integer id; character(16) file
+	v=GMT_Create_Data(dim=dim)
+	call sGMTF_Init_Vector(resource=v,c1=x,c2=y)
+	id=GMT_Get_ID(resource=v)
+	call sGMT_Encode_ID(string=file,object_ID=id)
+or by a single cumulative call:
+	call sGMTF_Create_Init_Encode(dim=dim,c1=x,c2=y,object_ID=id,string=file)
+
+(3) Interfaces to C API functions are also available and can be used via cGMT_* function calls. Explicit references to the iso_c_binding machinery are necessary that makes the cGMT_* functions rather low-level.
+Example:
+	type(c_ptr) API
+	API=cGMT_Create_Session("Test"//c_null_char,2,0,0)
+	err=cGMT_Call_Module(API,"psxy"//c_null_char,GMT_MODULE_CMD,"file.dat -J -R -B ->file.ps"//c_null_char)
+	err=cGMT_Destroy_Session(API)
+
+(4) All enumerated integer constants from the C API header files are available, e.g., GMT_IS_DATASET, GMT_IS_POINT, GMT_MODULE_CMD and hundreds of others. They are mostly intended to modify the default behavior of GMT API functions via optional arguments. Few of them differ from the C function names by the letter case only; in such cases, the enumerated constants are renamed on the Fortran side (GMT_DUPLICATE_DATA_ENUM, GMT_OPTION_STRUCT, k/kk).
+
+(5) Many structure definitions from the C API header files are made interoperable with Fortran, e.g., GMT_VECTOR, GMT_MATRIX and GMT_DATASET. They can be used for importing data from user arrays into GMT API structures with the help of iso_c_binding techniques. Often, auxiliary Fortran subroutines sGMTF_* may alleviate these steps. Note that there is no need to seek for an interoperable counterpart to C unions (e.g., GMT_UNIVECTOR); the approach based on assignment statements with help of the iso_s_binding c_loc function can be found in the sGMTF_Init_Vector_* series of Fortran subroutines.
+
+GMT Fortran wrapper subroutines
+-------------------------------
+All wrapper subroutines have the name pattern sGMT_*. They keep all the arguments of the original C API functions, however, some are optional and some may have other data types more appropriate to Fortran users. Subroutine sGMT is a super-wrapper to GMT_Call_Module. The wrappers handle the transfer of Fortran character arguments to C functions via trim(string)//c_null_char (zero-terminated strings of dynamic length). The wrappers also provide default values to non-present optional arguments. The first argument (eAPI) of all wrappers denotes the API session and, if omitted, it defaults to an internal pointer (iAPI). With the first argument not present, the other arguments must be passed via the keyword (not positional) association, e.g., call sGMT_Call_Module(module=module,args=args). The super-wrapper sGMT accepts the non-keyword association of the cmd argument, e.g., call sGMT(eAPI,cmd); call sGMT(cmd).
+
+List of sGMT_* subroutines
+subroutine sGMT_Create_Session(tag[,pad][,mode][,print_func][,eAPI][,err])
+	character(*) tag; type(c_ptr) eAPI; integer err
+	defaults: pad=2; mode=0; print_func=0; eAPI=iAPI
+subroutine sGMT_Call_Module([eAPI,]module[,mode],args[,err])
+	character(*) module,args
+	defaults: eAPI=iAPI; mode=GMT_MODULE_CMD
+subroutine sGMT([eAPI,]cmd[,err]); subroutine sGMT(cmd[,err]) - a super-wrapper to GMT_Call_Module
+	type(c_ptr) eAPI; character(*) cmd
+	note: positional association is possible, i.e., can be referenced via both call sGMT(cmd=cmd) and call sGMT(cmd)
+subroutine sGMT_Destroy_Session([eAPI,][err])
+subroutine sGMT_Create_Data([eAPI,][family,][geometry,][mode,]dim[,wesn][,inc][,registration][,pad][,data],resource[,err])
+	integer(8) dim(2); type(c_ptr) resource; real(8) wesn(6),inc(2)
+	defaults: family=GMT_IS_VECTOR; geometry=GMT_IS_POINT; mode=0; wesn=c_null_ptr; inc=c_null_ptr; registration=0; pad=0; data=c_null_ptr
+	note: non-default kind of the integer array dim(2)
+subroutine sGMT_Get_Data([eAPI,]object_ID[,mode][,data],resource[,err])
+	integer object_ID; type(c_ptr) resource
+	defaults: mode=0; data=c_null_ptr
+subroutine sGMT_Read_Data([eAPI,][family,][method,][geometry,][mode,][wesn,]input[,data],resource[,err])
+	character(*) input; type(c_ptr) resource
+	defaults: family=GMT_IS_VECTOR; method=GMT_IS_FILE; geometry=GMT_IS_POINT; mode=0; wesn=c_null_ptr; data=c_null_ptr
+subroutine sGMT_Retrieve_Data([eAPI,]object_ID,resource[,err])
+	integer object_ID; type(c_ptr) resource
+subroutine sGMT_Duplicate_Data([eAPI,][family,][mode,]data,resource[,err])
+	type(c_ptr) data,resource
+	defaults: family=GMT_IS_GRID; mode=GMT_DUPLICATE_DATA_ENUM (C API value: GMT_DUPLICATE_DATA)
+subroutine sGMT_Put_Data([eAPI,]object_ID[,mode],data[,err])
+	integer oject_ID; type(c_ptr) data
+	defaults: mode=GMT_IS_GRID
+subroutine sGMT_Write_Data([eAPI,][family,][method,][geometry,][mode,][wesn,]output,data[,err])
+	character(*) output; type(c_ptr) data
+	defaults: family=GMT_IS_GRID; method=GMT_IS_FILE; geometry=GMT_IS_SURFACE; mode=GMT_GRID_ALL; wesn=c_null_ptr
+subroutine sGMT_Register_IO([eAPI,][family,][method,][geometry,][direction,][wesn,][resource,]object_ID)
+	type(c_ptr) resource; integer object_ID
+	defaults: family=GMT_IS_DATASET; method=GMT_IS_FILE; geometry=GMT_IS_POINT; direction=GMT_IN; wesn=c_null_ptr; resource=c_null_ptr
+subroutine sGMT_Register_IO_char([eAPI,][family,][method,][geometry,][direction,][wesn,]resource,object_ID)
+	character(*) resource; integer object_ID
+	defaults: family=GMT_IS_DATASET; method=GMT_IS_FILE; geometry=GMT_IS_POINT; direction=GMT_IN; wesn=c_null_ptr
+subroutine sGMT_Init_IO([eAPI,][family,][geometry,][direction,][mode,][n_args,][args,][err])
+	defaults: family=GMT_IS_DATASET; geometry=GMT_IS_POINT; direction=GMT_IN; mode=GMT_ADD_DEFAULT; n_args=0; args=c_null_ptr
+subroutine sGMT_Encode_ID([eAPI,]string,object_ID[,err])
+	character(16) string; integer object_ID
+subroutine sGMT_Get_ID([eAPI,][family,][direction,]resource,object_ID[,err])
+	type(c_ptr) resource; integer object_ID
+	defaults: family=GMT_IS_DATASET; direction=GMT_IN
+subroutine sGMT_Report([eAPI,][level,]message[,err])
+	character(*) message
+	defaults: level=GMT_MSG_NORMAL
+subroutine sGMT_Message([eAPI,][mode,]format[,err])
+	character(*) format
+	defaults: mode=GMT_TIME_NONE
+
+GMT Fortran wrapper functions
+-----------------------------
+The name pattern: GMT_*. The functions have the same interface as the subroutine counterparts; exceptions are the return values. One new wrapper function is added to create a default session without explicit assignment of the eAPI pointer. Super-wrapper functions to GMT_Call_Module received synonymous names fGMT and GMTF (simple "GMT" is reserved as a module name). Optional arguments and default values in the wrapper functions are the same as in the wrapper subroutines. 
+
+List of GMT_* functions
+type(c_ptr) function GMT_Create_Session(tag,pad,mode,print_func,err)
+integer function GMT_Create_Default_Session(tag,pad,mode,print_func) - to create a default session
+integer function GMT_Call_Module(eAPI,module,mode,args)
+integer function fGMT([eAPI,]cmd); integer function fGMT(cmd) - a super-wrapper to GMT_Call_Module
+integer function GMTF([eAPI,]cmd); integer function GMTF(cmd) - a super-wrapper to GMT_Call_Module
+integer function GMT_Destroy_Session(eAPI)
+type(c_ptr) function GMT_Create_Data(eAPI,family,geometry,mode,dim,wesn,inc,registration,pad,data,err)
+type(c_ptr) function GMT_Get_Data(eAPI,object_ID,mode,data,err)
+type(c_ptr) function GMT_Read_Data(eAPI,family,method,geometry,mode,wesn,input,data,err)
+type(c_ptr) function GMT_Retrieve_Data(eAPI,object_ID,err)
+type(c_ptr) function GMT_Duplicate_Data(eAPI,family,mode,data,err)
+integer function GMT_Put_Data(eAPI,object_ID,mode,data)
+integer function GMT_Write_Data(eAPI,family,method,geometry,mode,wesn,output,data)
+integer function GMT_Register_IO(eAPI,family,method,geometry,direction,wesn,resource)
+integer function GMT_Register_IO_char(eAPI,family,method,geometry,direction,wesn,resource)
+integer function GMT_Init_IO(eAPI,family,geometry,direction,mode,n_args,args)
+integer function GMT_Encode_ID(eAPI,string,object_ID)
+integer function GMT_Get_ID(eAPI,family,direction,resource,err)
+integer function GMT_Report(eAPI,level,message)
+integer function GMT_Message(eAPI,mode,format)
+
+Fortran subroutines for initialization of C structs
+---------------------------------------------------
+The name pattern: sGMTF_*, also aliased to sGMT_*. Overloaded for real(4)/real(8) 1D/2D array arguments c1, ..., c5.
+
+List of generic sGMTF_* subroutines
+subroutine sGMTF_Init_Vector([eAPI,]resource,c1[,c2][,c3][,c4][,c5])
+	type(c_ptr) resource; real(4|8),dimension(*|1,*) c1,c2,c3,c4,c5
+subroutine sGMTF_Create_Init_Encode &
+	([eAPI,][family,][geometry,][mode,]dim,[wesn,][inc,][registration,][pad,][data,]c1[,c2][,c3][,c4][,c5],object_ID,string)
+	type(c_ptr) resource; real(4|8),dimension(*|1,*) c1,c2,c3,c4,c5
+	defaults: as in sGMT_Create_Data (can be changed) and sGMT_Get_ID (fixed values)
+
+List of specific sGMTF_* subroutines
+sGMTF_Init_Vector_r4_1D,sGMTF_Init_Vector_r4_2D,sGMTF_Init_Vector_r8_1D,sGMTF_Init_Vector_r8_2D
+sGMTF_Create_Init_Encode_r4_1D,sGMTF_Create_Init_Encode_r4_2D,sGMTF_Create_Init_Encode_r8_1D,sGMTF_Create_Init_Encode_r8_2D
+
+Interfaces to C functions
+-------------------------
+The name pattern: cGMT_*. Required all arguments as described in the GMT C API documentation. Several iso_c_binding tricks are necessary to maintain the correct functionality. E.g., Fortran strings passed to the cGMT_* functions have to be zero-terminated and sometimes the trimming is necessary:
+	err=cGMT_Call_Module(API,trim(module)//c_null_char,GMT_MODULE_CMD,trim(args)//c_null_char)
+or C strings returned to the Fortran side might need to have the '\0' character removed, as is the case of the string argument after a call to cGMT_Encode_ID; cGMT_Report and cGMT_Message functions expect receiving string arguments ended with c_new_line//c_null_char. Frequent calls to the c_loc, c_f_pointer and c_associated procedures might be necessary in many contexts.
+
+List of cGMT_* functions
+cGMT_Create_Session, cGMT_Call_Module, cGMT_Destroy_Session, cGMT_Create_Data, cGMT_Get_Data, cGMT_Read_Data, cGMT_Retrieve_Data, cGMT_Duplicate_Data, sGMT_Put_Data, sGMT_Write_Data, cGMT_Register_IO, cGMT_Init_IO, cGMT_Encode_ID, cGMT_Get_ID, cGMT_Report, cGMT_Message
+and all others as specified in the GMT API Documentation.
+
+Technical notes
+---------------
+- Encode_ID is Fortran-native, without a call to C API
+- Destroy_Session nullifies API pointer
+- merge(opt,dummy,present(opt)) can make segfault in PGI
