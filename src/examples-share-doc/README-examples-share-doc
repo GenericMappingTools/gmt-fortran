@@ -1,0 +1,22 @@
+$Id$
+
+List of standard GMT examples (src/examples-share-doc)
+======================================================
+*.sh, *.bat: Linux/Windows scripts from the GMT documentation tree (GMT_SHAREDIR/doc/examples)
+*.f90: equivalent Fortran codes (gmt.f90 and gmt_misc.f90 required)
+Make.inc: macros for compiler names and flags
+
+Compilation
+- by call to 'make' or by a command similar to 'f90 gmt.f90 gmt_misc.f90 example.f90 -Lpath_to_gmt_lib -lgmt'
+- tested with GNU, Intel, PGI and g95, Linux and Windows
+
+Notes
+-----
+- "gmt module" script commands converted to Fortran super-wrapper calls "call sGMT('module')"
+- a default API session made silently by the first super-wrapper call
+- optional arguments, no error checking, calls to ps2raster
+- module gmt_misc used for overloaded + and subroutines echo and rm
+- shell redirection operators changed to equivalent GMT options:
+  example: *.sh  ... > file.ps ; >> file.ps
+           *.f90 ... ->file.ps ; ->>file.ps
+- ex16: PostScript output made by API calls errorneous (PS output made by shell scripts ok)

@@ -1,0 +1,57 @@
+$Id$
+
+List of examples of GMT Fortran API with OpenMP (src/examples-openmp)
+=====================================================================
+*.sh, *.bat: Linux/Windows scripts
+*.f90: equivalent Fortran codes (gmt.f90 required)
+Make.inc: macros for compiler names and flags
+
+Compilation
+- by call to 'make' or by a command similar to 'f90 -openmp-flag gmt.f90 example.f90 -Lpath_to_gmt_lib -lgmt'
+- tested with GNU, Intel and PGI, Linux and Windows
+
+Example 01: a loop of psxy calls parallelized via OpenMP
+--------------------------------------------------------
+Examples of parallelized production of a series of similar plots. A time series of (ntime+1) 2D plots of (nmax+1) points [x,y(x,t)],
+
+  y(x,t)=sin(k.x+w.t), x=0..2*pi, t=0..2*pi, k=const, w=const,
+
+is considered.
+
+ex01.sh, ex01.bat
+Linux/Windows shell script. Input data prepared by gmtmath call within the script. Optionally (using comments in the scripts), data can be saved into files and psxy can then read data from files.
+
+ex01*.f90
+Execution of loop iterations with psxy calls is distributed among nthread threads via OpenMP work-sharing directives.
+
+At the beginning of the parallel region, each thread creates its own threadprivate API session. (Threadprivate API sessions, in contrast to simply private ones, survive across parallel regions in codes with more than one parallel region.) Calls to GMT_Create_Session have to be serialized via a CRITICAL section, otherwise conflicts emerge when reading gmt.conf (as of GMT 5.1.1). The main parallel loop follows. In each loop iteration, a private array y is computed from a fixed shared array x, both are
+(ex01a.f90) saved into datafiles and the psxy module is called to create a PostScript output from those datafiles. 
+(ex01b.f90) copied into a private GMT_VECTOR structure, the structure is encoded into a private virtual filename, and the psxy module is called to create a PostScript output from those data structures.
+This part of the code scales well, the CPU time decreases with the increasing number of involved processor cores as expected. At the loop end, an optional call to the ps2raster module can be issued. It appears that gswin64c/gswin32c cannot be called from the GMT API in parallel safely - occasional conflicts result in incorrect or missing bitmap files. To prevent this behaviour, calls to ps2raster are serialized. Finally, API sessions are destroyed in parallel.
+
+Note that another source of parallel conflicts comes out when the GSHHS data would be referenced, e.g., by the pscoast module.
+
+CPU (wallclock) times
+---------------------
+Intel i7 Six-core, Linux Ubuntu 12.04, GNU Fortran 4.6.3
+ntime=200 time steps, nmax=100000 data points
+ex01.sh with gmtmath piping data to psxy                39.3 s
+ex01.sh with psxy reading data from files               35.8 s
+ex01a.f90 with psxy reading data from files, 1 thread   33.1 s
+--"--                                        4 threads   8.9 s
+ex01b.f90 with psxy reading user arrays,     1 thread    9.0 s
+--"--                                        4 threads   2.4 s
+
+Conclusion
+----------
+OpenMP thread parallelization of the GMT API calls works quite satisfactorily, even when a statement on no thread support can be found in the GMT API documentation. The limits found here involve the need of serialized access to external files, like gmt.conf and the GSHHS data, or applications, like GhostScript.
+
+Additional notes
+----------------
+Compiler OpenMP flags: 
+  gfortran -fopenmp
+  ifort -openmp
+  pgfortran -mp
+g95 on Windows reports an internal compiler error here, and does not support OpenMP anyway.
+Due to use of the omp_lib module, it is reasonable to compile the codes with an OpenMP flag for both serial and parallel runs, and switch between them by the value of the runParallel constant in the source code (i.e., by the IF clause of the PARALLEL directive). However, thread-specific information is used only for output and the omp_lib dependency could be removed.
+Care must be taken of a stack size when the number of threads increases as the private clones of the array y may become too large for a default stack. This is usual in OpenMP codes, and even more pronounced with static arrays.

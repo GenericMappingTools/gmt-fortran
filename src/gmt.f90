@@ -1,6 +1,6 @@
 ! $Id$
 ! ======================================================================
-! GMT FORTRAN API
+! GMT Fortran API
 ! alias 
 ! GMT5 API from Fortran 2003 codes
 ! ----------------------------------
@@ -950,6 +950,7 @@ end subroutine
 integer function GMTi(cmd)
 character(*) :: cmd
 integer :: iblank
+if (.not.c_associated(iAPI)) call sGMT_Create_Session("Default")
 iblank=index(cmd,' ')
 if (iblank>1) then
   GMTi=GMT_Call_Module(module=cmd(:iblank-1),args=cmd(iblank+1:))
@@ -976,6 +977,7 @@ subroutine sGMTi(cmd,err)
 character(*) :: cmd
 integer,optional :: err
 integer :: iblank,c_err
+if (.not.c_associated(iAPI)) call sGMT_Create_Session("Default")
 iblank=index(cmd,' ')
 if (iblank>1) then
   c_err=GMT_Call_Module(module=cmd(:iblank-1),args=cmd(iblank+1:))

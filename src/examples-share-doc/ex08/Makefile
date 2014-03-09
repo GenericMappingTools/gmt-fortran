@@ -13,25 +13,24 @@
 
 include ../Make.inc
 GMTF90=../../gmt.f90
+GMTMISC=../../gmt_misc.f90
 
 # "make all" rule
 all: Fortran
 
 # "make Fortran", "make F" rules
 Fortran: F
-F: example_08 example_08b
+F: example_08
 
 # rules for particular targets
-example_08: $(GMTF90) example_08.f90
-	$(FC) -o $@ $(FCFLAGS) $^ $(LIBS)
-example_08b: $(GMTF90) example_08b.f90
+example_08: $(GMTF90) $(GMTMISC) example_08.f90
 	$(FC) -o $@ $(FCFLAGS) $^ $(LIBS)
 
 # "make clean" rule
 .PHONY: clean
 clean:
 	-rm -f *.o *.obj *.mod *.dwf *.pdb
-	-rm -f c??? c???.exe f??? f???.exe example_?? example_??.exe example_??? example_???.exe
+	-rm -f c??? c???.exe f??? f???.exe example_?? example_??.exe
 	-rm -f ex*.grd ex*.cpt
 	-rm -f ex*.ps ex*.png
 	-rm -f gmt.conf gmt.history

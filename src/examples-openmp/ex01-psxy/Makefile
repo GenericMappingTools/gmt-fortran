@@ -20,17 +20,19 @@ all: Fortran
 
 # "make Fortran", "make F" rules
 Fortran: F
-F: example_02
+F: f01a f01b
 
 # rules for particular targets
-example_02: $(GMTF90) $(GMTMISC) example_02.f90
+f01a: $(GMTF90) ex01a.f90
+	$(FC) -o $@ $(FCFLAGS) $^ $(LIBS)
+f01b: $(GMTF90) $(GMTMISC) ex01b.f90
 	$(FC) -o $@ $(FCFLAGS) $^ $(LIBS)
 
 # "make clean" rule
 .PHONY: clean
 clean:
 	-rm -f *.o *.obj *.mod *.dwf *.pdb
-	-rm -f c??? c???.exe f??? f???.exe example_?? example_??.exe
+	-rm -f c??? c???.exe f??? f???.exe
 	-rm -f ex*.grd ex*.cpt
-	-rm -f ex*.ps ex*.png
+	-rm -f ex*.ps ex*.png ex*.jpg ps2*.eps 0???.ps 0???.png 0???.jpg
 	-rm -f gmt.conf gmt.history

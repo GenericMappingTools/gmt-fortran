@@ -3,12 +3,16 @@ $Id$
 List of examples of GMT Fortran API (src/examples-api)
 ======================================================
 *.bat: Linux/Windows scripts
-*.c:   C codes tested with Linux/Windows GNU C, Intel C, PGI C
-*.f90: Fortran codes tested with Linux/Windows GNU Fortran, g95, Intel Fortran, PGI Fortran (require gmt.f90)
-Make.inc in src/examples-api: compiler names and flags
-Makefile in src/examples-api: to compile all examples
-Makefile in src/examples-api/ex*: to compile all examples in the selected directory
-See "How to compile and run examples" below.
+*.c:   equivalent C codes
+*.f90: equivalent Fortran codes (gmt.f90 required)
+Make.inc in src/examples-api: macros for compiler names and flags
+Makefile in src/examples-api: makefile to compile all examples in subdirectories
+Makefile in src/examples-api/ex*: makefiles to compile all examples in the actual directory
+
+Compilation
+- by call to 'make' or by a command similar to 'f90 gmt.f90 example.f90 -Lpath_to_gmt_lib -lgmt'
+- tested with GNU, Intel, PGI and g95, Linux and Windows
+See more in "How to compile and run examples" below.
 
 Example 01: psxy/ps2raster with 2D data
 ---------------------------------------
