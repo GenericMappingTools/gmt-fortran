@@ -1,7 +1,7 @@
 ! $Id$
 ! ----------------------------------------------------------------------
 ! Test of GMT Fortran API with OpenMP
-! time series of 2D plots
+! a time series of 2D plots
 !   y(x,t)=sin(k.x+w.t), x=0..2*pi, t=0..2*pi, k=const, w=const,
 ! nthread threads create (ntime+1) plots of (nmax+1) points [x,y(x,t)]
 ! session structures API are threadprivate (not just private) to survive across parallel regions
@@ -9,7 +9,7 @@
 ! calls to ps2raster are serialized, otherwise results are errorneous
 ! ----------------------------------------------------------------------
 
-program ex04a
+program ex01a
 use gmt
 use omp_lib
 implicit none
@@ -37,8 +37,8 @@ k=1.
 w=1.
 
 ! parallel region
-!$OMP PARALLEL IF (runParallel) NUM_THREADS (nthread) &
-!$OMP DEFAULT (NONE) SHARED (x,k,w) PRIVATE (it,t,y,id,filedat,fileps,title,cmd,ch,chd,cht)
+!$OMP PARALLEL IF (runParallel) NUM_THREADS (nthread) DEFAULT (NONE) &
+!$OMP SHARED (x,k,w) PRIVATE (it,t,y,id,filedat,fileps,title,cmd,ch,chd,cht)
 
 ! create threadprivate API sessions
   it=OMP_GET_THREAD_NUM()              ! thread number

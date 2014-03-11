@@ -3,11 +3,11 @@ $Id$
 List of examples of GMT Fortran API with OpenMP (src/examples-openmp)
 =====================================================================
 *.sh, *.bat: Linux/Windows scripts
-*.f90: equivalent Fortran codes (gmt.f90 required)
+*.f90: equivalent Fortran codes (gmt.f90 and gmt_misc.f90 required)
 Make.inc: macros for compiler names and flags
 
 Compilation
-- by call to 'make' or by a command similar to 'f90 -openmp-flag gmt.f90 example.f90 -Lpath_to_gmt_lib -lgmt'
+- by call to 'make' or by a command similar to 'f90 -openmp-flag gmt.f90 gmt_misc.f90 example.f90 -Lpath_to_gmt_lib -lgmt'
 - tested with GNU, Intel and PGI, Linux and Windows
 
 Example 01: a loop of psxy calls parallelized via OpenMP
@@ -29,8 +29,6 @@ At the beginning of the parallel region, each thread creates its own threadpriva
 (ex01b.f90) copied into a private GMT_VECTOR structure, the structure is encoded into a private virtual filename, and the psxy module is called to create a PostScript output from those data structures.
 This part of the code scales well, the CPU time decreases with the increasing number of involved processor cores as expected. At the loop end, an optional call to the ps2raster module can be issued. It appears that gswin64c/gswin32c cannot be called from the GMT API in parallel safely - occasional conflicts result in incorrect or missing bitmap files. To prevent this behaviour, calls to ps2raster are serialized. Finally, API sessions are destroyed in parallel.
 
-Note that another source of parallel conflicts comes out when the GSHHS data would be referenced, e.g., by the pscoast module.
-
 CPU (wallclock) times
 ---------------------
 Intel i7 Six-core, Linux Ubuntu 12.04, GNU Fortran 4.6.3
@@ -42,9 +40,28 @@ ex01a.f90 with psxy reading data from files, 1 thread   33.1 s
 ex01b.f90 with psxy reading user arrays,     1 thread    9.0 s
 --"--                                        4 threads   2.4 s
 
+Example 02: a loop of pscoast calls parallelized via OpenMP
+-----------------------------------------------------------
+A loop of (ntime+1) orthographic projections with selected resolution.
+
+ex02.sh, ex02.bat
+Linux/Windows shell script. Input data read internally by pscoast and from ex02-line.dat and ex02-text.dat by psxy and pstext.
+
+ex02a.f90
+Execution of loop iterations with pscoast/psxy/pstext calls is distributed among nthread threads via OpenMP work-sharing directives. Segfaults emerge when the GSHHS data are referenced in parallel by the pscoast module (as of GMT 5.1.1), therefore the calls are serialized via a CRITICAL section, and the same has to be done with calls to ps2raster. As pscoast and ps2raster calls take most of the CPU time, thread parallelization is not effective this time. However, the API code runs slightly faster than the shell script.
+
+CPU (wallclock) times
+---------------------
+Intel i7 Six-core, Linux Ubuntu 12.04, Intel Fortran 13.0.1 (occasional segfaults with GNU Fortran 4.6.3)
+ntime=100 steps
+           resolution crude   low     intermed
+ex02.sh               20.5 s, 57.7 s, 198 s
+ex02a.f90, 1 thread   12.3 s, 50.1 s, 191 s
+--"--      4 threads  13.0 s, 53.6 s, 200 s
+
 Conclusion
 ----------
-OpenMP thread parallelization of the GMT API calls works quite satisfactorily, even when a statement on no thread support can be found in the GMT API documentation. The limits found here involve the need of serialized access to external files, like gmt.conf and the GSHHS data, or applications, like GhostScript.
+OpenMP thread parallelization of the GMT API calls works quite satisfactorily, even when a statement on no thread support can be found in the GMT API documentation. The limits found here involve the need of serialized access to external files, like gmt.conf and the GSHHS data, or GhostScript.
 
 Additional notes
 ----------------
@@ -55,3 +72,8 @@ Compiler OpenMP flags:
 g95 on Windows reports an internal compiler error here, and does not support OpenMP anyway.
 Due to use of the omp_lib module, it is reasonable to compile the codes with an OpenMP flag for both serial and parallel runs, and switch between them by the value of the runParallel constant in the source code (i.e., by the IF clause of the PARALLEL directive). However, thread-specific information is used only for output and the omp_lib dependency could be removed.
 Care must be taken of a stack size when the number of threads increases as the private clones of the array y may become too large for a default stack. This is usual in OpenMP codes, and even more pronounced with static arrays.
+String concatenation is handled via the overloaded + and - operators defined in the gmt_misc module. It allows to concatenate trimmed strings with integer and real operands. + separates operands by a blank, - concatenates tightly.
+E.g.: "psxy"+dat+"-J -R -B"                     for "psxy file.dat -J -R -B"
+      "psxy"+"file"-0-1-".dat"+"->"-ps          for "psxy file01.dat ->file.ps"
+      "psxy -R"-xmin-"/"-xmax-"/"-ymin-"/"-ymax for "psxy -R0/1/.00000/1.00000"
+

@@ -1,17 +1,19 @@
 $Id$
 
-GMT FORTRAN API README
+GMT Fortran API README
 ======================
 
 Quick howto
 -----------
 Using GMT5 API calls from Fortran codes can be set up with help of a Fortran program unit "module gmt". By attaching the module, a Fortran user receives access to GMT C API enumerations, structures and interfaces, and also to Fortran wrappers that make calls to the C functions easier; in particular, the iso_c_binding module can remain behind the scene. The interfaces of the Fortran wrappers are largely simplified by means of optional arguments, and the wrappers also alleviate the transfer of character arguments. Finally, a couple of Fortran subroutines is available to facilitate transfer of Fortran user arrays into GMT5 data structures.
 
-Get the module by
+Another module with miscellaneous procedures (not needed but useful) for GMT Fortran API is "module gmt_misc". It should help especially to convert shell scripts to Fortran codes, especially to construct GMT module arguments by providing overloaded operators + and - for string concatenation with the trim feature, ability to concatenate strings with integer and real numbers and optional blank separation. Subroutines for echoing data to temporary files and removing the files supplied.
+
+Get the modules by
 
 	svn checkout svn://gmtserver.soest.hawaii.edu/gmt-fortran gmt-fortran
 
-and find it in gmt-fortran/trunk/src/gmt.f90.
+and find both in gmt-fortran/trunk/src.
 
 Access it from your Fortran source code as in, e.g.,
 
