@@ -44,7 +44,7 @@ dim=[2,size(x)]
 
 ! create threadprivate API sessions
   it=OMP_GET_THREAD_NUM()                 ! thread number
-  write (cht,'(i4.4)') it
+  cht=int2char(it,4)
 !$OMP CRITICAL
   API=GMT_Create_Session("Test"+it)       ! conflicts when reading gmt.conf in parallel
 !$OMP END CRITICAL
@@ -53,12 +53,12 @@ dim=[2,size(x)]
 ! run a parallel loop to create plots
 !$OMP DO SCHEDULE (DYNAMIC)
 do i=0,ntime
-  write (ch,'(i4.4)') i
+  ch=int2char(i,4)
   fileps=ch-".ps"                         ! PostScript output
   t=pi*2.*i/ntime                         ! time
   y=sin(k*x+w*t)                          ! y data
   call sGMT_Create_Init_Encode(API,dim=dim,c1=x,c2=y,object_ID=id,string=filedat)
-  write (chd,'(i4.4)') id                 ! object_ID for y data
+  chd=int2char(id,4)                      ! object_ID for y data
   print *,'i,id,it ='+i+id+it
   title='"i/id/it ='+ch-'/'-chd-'/'-cht-'"'
   cmd="psxy"+filedat+"-JX15c/10c -R0/7/-1/1 -Bx1+lx -By0.5+ly -BWS+t"-title+"-Sc0.15c -N ->"-fileps

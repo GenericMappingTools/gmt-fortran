@@ -25,6 +25,14 @@ interface operator (-)
 module procedure ChCh,ChInt,ChReal4,ChReal8
 end interface
 private ChBCh,ChBInt,ChBReal4,ChBReal8,ChCh,ChInt,ChReal4,ChReal8
+! ----------------------------------
+interface int2char
+module procedure int2char1,int2char2
+end interface
+interface i2ch
+module procedure int2char1,int2char2
+end interface
+private int2char1,int2char2
 ! ======================================================================
 contains
 ! ======================================================================
@@ -52,8 +60,9 @@ function ChBInt(a,i)
 implicit none
 character(*),intent(in) :: a
 integer,intent(in) :: i
-character(10) chi
-character(len_trim(a)+1+len(chi)) ChBInt
+integer,parameter :: lenchi=10
+character(lenchi) chi
+character(len_trim(a)+1+lenchi) ChBInt
 write (chi,'(i0)') i
 ChBInt=trim(a)//' '//chi
 end function
@@ -64,8 +73,9 @@ function ChInt(a,i)
 implicit none
 character(*),intent(in) :: a
 integer,intent(in) :: i
-character(10) chi
-character(len_trim(a)+len(chi)) ChInt
+integer,parameter :: lenchi=10
+character(lenchi) chi
+character(len_trim(a)+lenchi) ChInt
 write (chi,'(i0)') i
 ChInt=trim(a)//chi
 end function
@@ -76,17 +86,20 @@ function ChBReal4(a,r)
 implicit none
 character(*),intent(in) :: a
 real(4),intent(in) :: r
-character(12) chr
-character(len_trim(a)+1+len(chr)) ChBReal4
+integer,parameter :: lenchr=12
+character(lenchr) chr
+character(len_trim(a)+1+lenchr) ChBReal4
 write (chr,'(f0.5)') r
 ChBReal4=trim(a)//' '//chr
 end function
+! ----------------------------------
 function ChBReal8(a,r)
 implicit none
 character(*),intent(in) :: a
 real(8),intent(in) :: r
-character(12) chr
-character(len_trim(a)+1+len(chr)) ChBReal8
+integer,parameter :: lenchr=12
+character(lenchr) chr
+character(len_trim(a)+1+lenchr) ChBReal8
 write (chr,'(f0.5)') r
 ChBReal8=trim(a)//' '//chr
 end function
@@ -97,38 +110,68 @@ function ChReal4(a,r)
 implicit none
 character(*),intent(in) :: a
 real(4),intent(in) :: r
-character(12) chr
-character(len_trim(a)+len(chr)) ChReal4
+integer,parameter :: lenchr=12
+character(lenchr) chr
+character(len_trim(a)+lenchr) ChReal4
 write (chr,'(f0.5)') r
 ChReal4=trim(a)//chr
 end function
+! ----------------------------------
 function ChReal8(a,r)
 implicit none
 character(*),intent(in) :: a
 real(8),intent(in) :: r
-character(12) chr
-character(len_trim(a)+len(chr)) ChReal8
+integer,parameter :: lenchr=12
+character(lenchr) chr
+character(len_trim(a)+lenchr) ChReal8
 write (chr,'(f0.5)') r
 ChReal8=trim(a)//chr
 end function
 ! ======================================================================
+! convert integer to a string of a given length
+! example: ch=i2ch(1,3) for "001"
+! ----------------------------------
+function int2char1(i)
+implicit none
+integer,intent(in) :: i
+character(12) int2char1
+write (int2char1,'(i0)') i
+end function
+! ----------------------------------
+function int2char2(i,len)
+implicit none
+integer,intent(in) :: i
+integer,intent(in) :: len
+character(len) int2char2
+character(20) format
+write (format,'(a,i0,a,i0,a)') '(i',len,'.',len,')'
+write (int2char2,format) i
+end function
+! ----------------------------------
+! return a random integer
+! ----------------------------------
+integer function irandom()
+implicit none
+real x
+call random_number(x)
+irandom=int(765+4321*x)
+end function
+! ----------------------------------
 ! return a unique unit number
 ! usage: id=newunit(); open (id,file=...)
 ! or use a Fortran 2008 feature: open (newunit=id,file=...)
 ! ----------------------------------
 integer function newunit()
 implicit none
-real x
-call random_number(x)
-newunit=int(765+4321*x)
+newunit=irandom()
 end function
 ! ----------------------------------
 ! write character array lines into a file
 ! ----------------------------------
 subroutine echo(lines,file)
 implicit none
-character(*) lines(:)
-character(*) file
+character(*),intent(in) :: lines(:)
+character(*),intent(in) :: file
 integer :: id,i
 id=newunit(); open (id,file=file)
 ! open (newunit=id,file=file) ! Fortran 2008 feature
@@ -138,10 +181,17 @@ enddo
 close (id)
 end subroutine
 ! ----------------------------------
+subroutine echolf(lines,file)
+implicit none
+character(*),intent(in) :: lines(:)
+character(*),intent(in) :: file
+call echo(lines,file)
+end subroutine
+! ----------------------------------
 subroutine echofl(file,lines)
 implicit none
-character(*) file
-character(*) lines(:)
+character(*),intent(in) :: file
+character(*),intent(in) :: lines(:)
 call echo(lines,file)
 end subroutine
 ! ----------------------------------
@@ -149,8 +199,9 @@ end subroutine
 ! ----------------------------------
 subroutine rm(file)
 implicit none
-character(*) file
+character(*),intent(in) :: file
 integer :: id
+print *,'rm: ',trim(file)
 id=newunit(); open (id,file=file)
 ! open (newunit=id,file=file) ! Fortran 2008 feature
 close (id,status='delete')

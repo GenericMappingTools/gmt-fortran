@@ -1,6 +1,6 @@
 # $Id$
 
-DIRS = ex01-psxy ex02-pscoast ex03-grdimage
+DIRS = ex01-psxy ex02-pscoast ex04-anim04
 
 all:
 	@for dir in $(DIRS); \

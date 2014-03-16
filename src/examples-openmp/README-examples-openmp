@@ -59,9 +59,17 @@ ex02.sh               20.5 s, 57.7 s, 198 s
 ex02a.f90, 1 thread   12.3 s, 50.1 s, 191 s
 --"--      4 threads  13.0 s, 53.6 s, 200 s
 
+Example 03: a loop of grdimage calls parallelized via OpenMP
+-----------------------------------------------------------
+Not finished yet.
+
+Example 04: Fortran port of the anim_04.sh script from the GMT collection
+-------------------------------------------------------------------------
+A loop to visualize a NY to Miami flight. A series of grdimage, psxy and pstext calls is parallelized via OpenMP work-sharing directives. Segfaults emerge when grid files are referenced in parallel by the grdimage and grdgradient modules (as of GMT 5.1.1), therefore the calls are serialized via a CRITICAL section, and the same has to be done with calls to ps2raster. As grdimage and ps2raster calls take most of the CPU time, thread parallelization is not effective this time.
+
 Conclusion
 ----------
-OpenMP thread parallelization of the GMT API calls works quite satisfactorily, even when a statement on no thread support can be found in the GMT API documentation. The limits found here involve the need of serialized access to external files, like gmt.conf and the GSHHS data, or GhostScript.
+OpenMP parallelization of GMT 5.1.1 API codes makes sense as far as no grid-related modules are called. In particular, grdimage and pscoast cannot be run in parallel, and neither can ps2raster. On the other hand, parallelized psxy calls work and scale already as desired.
 
 Additional notes
 ----------------

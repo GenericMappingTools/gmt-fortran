@@ -26,28 +26,28 @@ CC_PGI=pgcc
 CCFLAGS_PGI_L=-g $(INCL_L)
 CCFLAGS_PGI_W=-g $(INCL_W)
 
-# Fortran compilers: GNU/Intel/PGI/g95 (Linux/Windows)
+# Fortran compilers: GNU/Intel/PGI (Linux/Windows)
 # -- GNU
 FC_GNU=gfortran
 # FCFLAGS_GNU_L=-g -march=native -std=f2003 -Wall -pedantic -fexternal-blas -fcheck=all -ffpe-trap=invalid,zero,overflow,underflow,denormal
 # FCFLAGS_GNU_W=-g -march=native -std=f2003 -Wall -pedantic -fexternal-blas -fcheck=all -ffpe-trap=invalid,zero,overflow,underflow,denormal
-FCFLAGS_GNU_L=-std=f2003 -Wall -pedantic -g -fopenmp
-FCFLAGS_GNU_W=-std=f2003 -Wall -pedantic -g -fopenmp
+# FCFLAGS_GNU_L=-std=f2003 -Wall -pedantic -g -fopenmp
+# FCFLAGS_GNU_W=-std=f2003 -Wall -pedantic -g -fopenmp
+FCFLAGS_GNU_L=-Wall -pedantic -g -fopenmp
+FCFLAGS_GNU_W=-Wall -pedantic -g -fopenmp
 # -- Intel
 FC_INT=ifort
 # FCFLAGS_INT_L=-nologo -e03 -warn -C -g -openmp
 # FCFLAGS_INT_W=-nologo -stand:f03 -warn -C -openmp
-FCFLAGS_INT_L=-nologo -warn -C -g -openmp
+FCFLAGS_INT_L=-nologo -warn -C -openmp
 FCFLAGS_INT_W=-nologo -warn -C -openmp
 LIBS_INT_W=$(GMT_W)\lib\gmt.lib
 # -- Portland Group
 FC_PGI=pgfortran
-FCFLAGS_PGI_L=-Mstandard -Minform=inform -C -Mbounds -g -mp
-FCFLAGS_PGI_W=-Mstandard -Minform=inform -C -Mbounds -g -mp
-# -- g95.org
-FC_G95=g95
-FCFLAGS_G95_L=-std=f2003 -Wall -pedantic -g
-FCFLAGS_G95_W=-std=f2003 -Wall -pedantic -g
+# FCFLAGS_PGI_L=-Mstandard -Minform=inform -C -Mbounds -g -mp
+# FCFLAGS_PGI_W=-Mstandard -Minform=inform -C -Mbounds -g -mp
+FCFLAGS_PGI_L=-Mstandard -C -Mbounds -g -mp
+FCFLAGS_PGI_W=-Mstandard -C -Mbounds -g -mp
 
 # selected set of compiler names and flags
 CC     =$(CC_GNU)

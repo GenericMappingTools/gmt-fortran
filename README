@@ -47,9 +47,7 @@ Tested with GNU, Intel, PGI and g95 on Linux and Windows, expected to work with 
 Check API examples of matching shell scripts, C codes and Fortran codes received along with the gmt.f90 in
 
 	gmt-fortran/trunk/src/examples-api
-
-and a few of examples ported from GMT_SHAREDIR/doc/examples in
-
+	gmt-fortran/trunk/src/examples-openmp
 	gmt-fortran/trunk/src/examples-share-doc
 
 Look at and send feedback to

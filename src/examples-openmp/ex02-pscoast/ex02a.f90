@@ -37,7 +37,7 @@ filetext="ex02-text.dat"
 
 ! parallel region
 !$OMP PARALLEL IF (runParallel) NUM_THREADS (nthread) DEFAULT (NONE) &
-!$OMP SHARED (lonmin,lonmax,latmin,latmax,fileline,filetext) PRIVATE (ch,it,fileps,lon,lat,title,cmd)
+!$OMP SHARED (lonmin,lonmax,latmin,latmax,fileline,filetext) PRIVATE (it,ch,fileps,lon,lat,title,cmd)
 
 ! create threadprivate API sessions
   it=OMP_GET_THREAD_NUM()                ! thread number
@@ -49,7 +49,7 @@ filetext="ex02-text.dat"
 ! run a parallel loop to create plots
 !$OMP DO SCHEDULE (DYNAMIC)
 do i=0,ntime
-  write (ch,'(i4.4)') i
+  ch=int2char(i,4)
   fileps=ch-".ps"                        ! PostScript output
   lon=lonmin+(lonmax-lonmin)*i/ntime
   lat=latmin+(latmax-latmin)*i/ntime
@@ -57,7 +57,6 @@ do i=0,ntime
   title='"'-i+'of'+ntime-'"'
   cmd="pscoast"+"-JG"-lon-"/"-lat-"/10c -R-0/360/-90/90 -Bxg30 -Byg15 -B+t"-title &
      +"-D"-resolution+"-Gsandybrown -Slightskyblue -P -K ->"-fileps
-  print *,trim(cmd)
 !$OMP CRITICAL
   call sGMT(API,cmd)                     ! segfaults when running pscoast in parallel
 !$OMP END CRITICAL
