@@ -31,17 +31,23 @@ CCFLAGS_PGI_W=-g $(INCL_W)
 FC_GNU=gfortran
 # FCFLAGS_GNU_L=-g -march=native -std=f2003 -Wall -pedantic -fexternal-blas -fcheck=all -ffpe-trap=invalid,zero,overflow,underflow,denormal
 # FCFLAGS_GNU_W=-g -march=native -std=f2003 -Wall -pedantic -fexternal-blas -fcheck=all -ffpe-trap=invalid,zero,overflow,underflow,denormal
-FCFLAGS_GNU_L=-std=f2003 -Wall -pedantic -g
-FCFLAGS_GNU_W=-std=f2003 -Wall -pedantic -g
+# FCFLAGS_GNU_L=-std=f2003 -Wall -pedantic -g
+# FCFLAGS_GNU_W=-std=f2003 -Wall -pedantic -g
+FCFLAGS_GNU_L=-Wall -pedantic -g
+FCFLAGS_GNU_W=-Wall -pedantic -g
 # -- Intel
 FC_INT=ifort
-FCFLAGS_INT_L=-nologo -e03 -warn -C -g
-FCFLAGS_INT_W=-nologo -stand:f03 -warn -C
+# FCFLAGS_INT_L=-nologo -e03 -warn -C -g
+# FCFLAGS_INT_W=-nologo -stand:f03 -warn -C
+FCFLAGS_INT_L=-nologo -warn -C
+FCFLAGS_INT_W=-nologo -warn -C
 LIBS_INT_W=$(GMT_W)\lib\gmt.lib
 # -- Portland Group
 FC_PGI=pgfortran
-FCFLAGS_PGI_L=-Mstandard -Minform=inform -C -Mbounds -g
-FCFLAGS_PGI_W=-Mstandard -Minform=inform -C -Mbounds -g
+# FCFLAGS_PGI_L=-Mstandard -Minform=inform -C -Mbounds -g
+# FCFLAGS_PGI_W=-Mstandard -Minform=inform -C -Mbounds -g
+FCFLAGS_PGI_L=-Mstandard -C -Mbounds -g
+FCFLAGS_PGI_W=-Mstandard -C -Mbounds -g
 # -- g95.org
 FC_G95=g95
 FCFLAGS_G95_L=-std=f2003 -Wall -pedantic -g

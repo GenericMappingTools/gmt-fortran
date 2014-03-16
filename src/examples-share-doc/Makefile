@@ -1,6 +1,6 @@
 # $Id$
 
-DIRS = ex01 ex02 ex04 ex08 ex16
+DIRS = ex01 ex02 ex04 ex08 ex16 anim04
 
 all:
 	@for dir in $(DIRS); \
